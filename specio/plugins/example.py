@@ -19,13 +19,13 @@ class DummyFormat(Format):
 
     This documentation is shown when the user does ``help('thisformat')``.
 
-    Parameters for reading
-    ----------------------
+    Parameters
+    ----------
     Specify arguments in numpy doc style here.
 
-    Parameters for saving
-    ---------------------
-    Specify arguments in numpy doc style here.
+    Attributes
+    ----------
+    Specify the specific attributes that can be useful.
 
     """
 
