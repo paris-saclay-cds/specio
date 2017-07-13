@@ -76,7 +76,6 @@ class Format(object):
                 raise ValueError('Invalid value for mode given.')
 
     def __repr__(self):
-        # Short description
         return '<Format %s - %s>' % (self.name, self.description)
 
     def __str__(self):
@@ -84,8 +83,6 @@ class Format(object):
 
     @property
     def doc(self):
-        """The documentation for this format (name + description + docstring).
-        """
         # Our docsring is assumed to be indented by four spaces. The
         # first line needs special attention.
         return '%s - %s\n\n    %s\n' % (self.name, self.description,
@@ -93,35 +90,37 @@ class Format(object):
 
     @property
     def name(self):
-        """ The name of this format.
-        """
         return self._name
 
     @property
     def description(self):
-        """A short description of this format.
-        """
         return self._description
 
     @property
     def extensions(self):
-        """A list of file extensions supported by this plugin.
-        These are all lowercase with a leading dot.
-        """
         return self._extensions
 
     @property
     def modes(self):
-        """A string specifying the modes that this format can handle.
-        """
         return self._modes
 
     def get_reader(self, request):
-        """get_reader(request)
+        """Return a Reader instance.
 
-        Return a reader object that can be used to read data and info
-        from the given file. Users are encouraged to use specio.get_reader()
+        Return a reader object that can be used to read data and info from the
+        given file. Users are encouraged to use :func:`specio.get_reader`
         instead.
+
+        Parameters
+        ----------
+        request : Request
+            The request to read a specific resource.
+
+        Returns
+        -------
+        reader : Format.Reader
+            Reader instance allowing to read the data.
+
         """
         select_mode = request.mode if request.mode in 'sS' else ''
         if select_mode not in self.modes:
@@ -130,9 +129,20 @@ class Format(object):
         return self.Reader(self, request)
 
     def can_read(self, request):
-        """ can_read(request)
+        """Indicate a spectra resource can be read.
 
         Get whether this format can read data from the specified uri.
+
+        Parameters
+        ----------
+        request : Request
+            The request to read a specific resource.
+
+        Returns
+        -------
+        is_readable : bool
+            Returns ``True`` if the file can be read and ``False`` otherwise.
+
         """
         return self._can_read(request)
 
@@ -141,18 +151,25 @@ class Format(object):
         return None
 
     class Reader(object):
-        """
-        The purpose of a reader object is to read data from an image
+        """Context manager to read the spectra.
+
+        The purpose of a reader object is to read data from an spectra
         resource, and should be obtained by calling :func:`.get_reader`.
 
-        A reader can be used as an iterator to read multiple images,
-        and (if the format permits) only reads data from the file when
-        new data is requested (i.e. streaming). A reader can also be
-        used as a context manager so that it is automatically closed.
+        A reader can be used as an iterator to read multiple images, and (if
+        the format permits) only reads data from the file when new data is
+        requested (i.e. streaming). A reader can also be used as a context
+        manager so that it is automatically closed.
 
-        Plugins implement Reader's for different formats. Though rare,
-        plugins may provide additional functionality (beyond what is
-        provided by the base reader class).
+        Plugins implement Reader's for different formats. Though rare, plugins
+        may provide additional functionality (beyond what is provided by the
+        base reader class).
+
+        Parameters
+        ----------
+        request : Request
+            The request to read a specific resource.
+
         """
 
         def __init__(self, format, request):
@@ -178,16 +195,23 @@ class Format(object):
             return self._request
 
         def get_length(self):
-            """ get_length()
+            """The number of spectrum.
 
-            Get the number of spectrum in the file. (Note: you can also
-            use ``len(reader_object)``.)
+            Get the number of spectrum in the file.
 
-            The result can be:
+            Returns
+            -------
+            length : int
+                The number of spectrum. The result can be:
 
-                * 0 for files that only have meta data
-                * 1 for singleton spectrum
-                * N for spectra series
+                    * 0 for files that only have meta data
+                    * 1 for singleton spectrum
+                    * N for spectra series
+
+            Notes
+            -----
+            You can also use ``len(reader_object)``
+
             """
             return self._get_length()
 
