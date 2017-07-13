@@ -1,3 +1,11 @@
+"""Base class used by the plugin to read a specific format."""
+
+# Copyright (c) 2017
+# Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
+# License: BSD 3 clause
+
+from __future__ import print_function
+
 import os
 from warnings import warn
 from six import string_types
@@ -115,7 +123,7 @@ class Format(object):
         from the given file. Users are encouraged to use specio.get_reader()
         instead.
         """
-        select_mode = request.mode[1] if request.mode[1] in 'sS' else ''
+        select_mode = request.mode if request.mode in 'sS' else ''
         if select_mode not in self.modes:
             raise RuntimeError('Format %s cannot read in mode %r' %
                                (self.name, select_mode))
@@ -278,7 +286,7 @@ class Format(object):
             self.__closed = True
             self._close()
             # Process results and clean request object
-            self.request.finish()
+            self.request._finish()
 
         @property
         def closed(self):
@@ -482,7 +490,7 @@ class FormatManager(object):
         Search a format that can read a file according to the given request.
         Returns None if no appropriate format was found. (used internally)
         """
-        select_mode = request.mode[1] if request.mode[1] in 'sS' else ''
+        select_mode = request.mode if request.mode in 'sS' else ''
         select_ext = request.filename.lower()
 
         # Select formats that seem to be able to read it
@@ -510,7 +518,7 @@ class FormatManager(object):
         Search a format that can write a file according to the given request.
         Returns None if no appropriate format was found. (used internally)
         """
-        select_mode = request.mode[1] if request.mode[1] in 'sS' else ''
+        select_mode = request.mode if request.mode in 'sS' else ''
         select_ext = request.filename.lower()
 
         # Select formats that seem to be able to write it

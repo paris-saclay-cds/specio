@@ -1,11 +1,30 @@
 """Python input/output for spectroscopic files."""
 
+from ._version import __version__
 from .core import FormatManager
 
 formats = FormatManager()
 
-from ._version import __version__
+# Load the functions
+from .core.functions import help
+from .core.functions import get_reader
+from .core.functions import specread
 
-__all__ = ['__version__']
+# Load the aliases
+from .core.functions import read
+
+# Load all the plugins
+from . import plugins
+
+# expose the show method of formats
+show_formats = formats.show
+
+__all__ = ['formats',
+           'help',
+           'get_reader',
+           'specread',
+           'read',
+           'plugins',
+           '__version__']
 
 del FormatManager

@@ -1,3 +1,9 @@
+"""Utilities"""
+
+# Copyright (c) 2017
+# Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
+# License: BSD 3 clause
+
 import re
 from collections import OrderedDict
 from six import string_types
@@ -72,33 +78,15 @@ class Spectrum(object):
                              ' array.')
         if not (meta is None or isinstance(meta, dict)):
             raise ValueError('Spectrum expects meta data to be a dict.')
-        meta = meta if meta is not None else {}
+        self._spectrum = spectrum
+        self._wavelength = wavelength
+        self._meta = meta if meta is not None else {}
 
-    def _copy_meta(self, meta):
-        """ Make a 2-level deep copy of the meta dictionary.
-        """
-        self._meta = Dict()
-        for key, val in meta.items():
-            if isinstance(val, dict):
-                val = Dict(val)  # Copy this level
-        self._meta[key] = val
-
-    def __array_finalize__(self, ob):
-        """ So the meta info is maintained when doing calculations with
-        the array.
-        """
-        if isinstance(ob, Spectrum):
-            self._copy_meta(ob.meta)
-        else:
-            self._copy_meta({})
-
-    def __array_wrap__(self, out, context=None):
-        """ So that we return a native numpy array (or scalar) when a
-        reducting ufunc is applied (such as sum(), std(), etc.)
-        """
-        if not out.shape:
-            return out.dtype.type(out)  # Scalar
-        elif out.shape != self.shape:
-            return out.view(type=np.ndarray)
-        else:
-            return out # Type Spectrum
+    def __repr__(self):
+        msg = ("Spectrum: \n"
+               "wavelength:\n {} \n"
+               "spectra: \n {} \n"
+               "metadata: \n {} \n".format(self._wavelength,
+                                           self._spectrum,
+                                           self._meta))
+        return msg

@@ -1,3 +1,9 @@
+"""Interface plugin resource"""
+
+# Copyright (c) 2017
+# Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
+# License: BSD 3 clause
+
 import os
 import sys
 import tempfile
@@ -9,11 +15,11 @@ URI_FILENAME = 3
 
 
 class Request(object):
-    """Request(uri, mode, **kwargs)
+    """Interface between a plugin and the spectra resource.
 
-    Represents a request for reading or saving an image resource. This object
-    wraps information to that request and acts as an interface for the plugins
-    to several resources; it allows the user to read from filenames, files but
+    Represents a request for reading an spectra resource. This object wraps
+    information to that request and acts as an interface for the plugins to
+    several resources; it allows the user to read from filenames, files but
     offer a simple interface to the plugins via ``get_file()`` and
     ``get_local_filename()``.
 
@@ -30,6 +36,14 @@ class Request(object):
     mode : str
         This character is used to indicate the kind of data:
         "s" for a spectrum, "S" for multiple spectra, "?" for don't care.
+
+    kwargs : dict
+        Keywords to pass to the plugin.
+
+    Attributes
+    ----------
+    filename : str
+        The filename of the file to be read.
 
     """
 
@@ -117,40 +131,37 @@ class Request(object):
 
     @property
     def filename(self):
-        """ The uri for which reading/saving was requested. This
-        can be a filename, an http address, or other resource
-        identifier. Do not rely on the filename to obtain the data,
-        but use ``get_file()`` or ``get_local_filename()`` instead.
-        """
         return self._filename
 
     @property
     def mode(self):
-        """ The mode of the request. The first character is "r" or "w",
-        indicating a read or write request. The second character is
-        used to indicate the kind of data:
-        "i" for an image, "I" for multiple images, "v" for a volume,
-        "V" for multiple volumes, "?" for don't care.
-        """
         return self._mode
 
     @property
     def kwargs(self):
-        """ The dict of keyword arguments supplied by the user.
-        """
         return self._kwargs
 
     # For obtaining data
 
     def get_file(self):
-        """ get_file()
-        Get a file object for the resource associated with this request.
-        Read the file in read mode. This method is not thread safe. Plugins
-        do not need to close the file when done.
+        """Get a file object for the resource.
 
-        This is the preferred way to read the data. But if a
-        format cannot handle file-like objects, they should use
-        ``get_local_filename()``.
+        Get a file object for the resource associated with this request. Read
+        the file in read mode. This method is not thread safe. Plugins do not
+        need to close the file when done.
+
+        This is the preferred way to read the data. But if a format cannot
+        handle file-like objects, they should use ``get_local_filename()``.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        file : file object
+            The file object associated with the resource.
+
         """
         # Is there already a file?
         # Either _uri_type == URI_FILE, or we already opened the file,
@@ -164,10 +175,21 @@ class Request(object):
         return self._file
 
     def get_local_filename(self):
-        """ get_local_filename()
+        """Get the filename of the resource.
+
         If the filename is an existing file on this filesystem, return
-        that. Otherwise a temporary file is created on the local file
-        system which can be used by the format to read from or write to.
+        that. Otherwise a temporary file is created on the local file system
+        which can be used by the format to read from.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        filename : str
+            The filename associated with the resource.
+
         """
 
         if self._uri_type == URI_FILENAME:
@@ -181,11 +203,10 @@ class Request(object):
                 shutil.copyfileobj(self.get_file(), file)
             return self._filename_local
 
-    def finish(self):
-        """ finish()
-        For internal use (called when the context of the reader
-        exits). Finishes this request. Close open files and process
-        results.
+    def _finish(self):
+        """For internal use (called when the context of the reader
+        exits). Finishes this request. Close open files and process results.
+
         """
         # Close open files that we know of (and are responsible for)
         if self._file and self._uri_type != URI_FILE:
@@ -195,25 +216,17 @@ class Request(object):
         if self._filename_local:
             try:
                 os.remove(self._filename_local)
-            except Exception:  # pragma: no cover
+            except Exception:
                 pass
             self._filename_local = None
 
         # Detach so gc can clean even if a reference of self lingers
         self._bytes = None
 
-    def get_result(self):
-        """ For internal use. In some situations a write action can have
-        a result (bytes data). That is obtained with this function.
-        """
-        self._result, res = None, self._result
-        return res
-
     @property
     def firstbytes(self):
-        """ The first 256 bytes of the file. These can be used to
-        parse the header to determine the file-format.
-        """
+        """The first 256 bytes of the file. These can be used to parse the
+        header to determine the file-format."""
         if self._firstbytes is None:
             self._read_first_bytes()
         return self._firstbytes
@@ -250,10 +263,24 @@ class Request(object):
 
 
 def read_n_bytes(f, N):
-    """ read_n_bytes(file, n)
+    """Read the N first bytes of a file object.
 
     Read n bytes from the given file, or less if the file has less
     bytes. Returns zero bytes if the file is closed.
+
+    Parameters
+    ----------
+    f : file object
+        The file object to read.
+
+    N : int
+        The number of byte to read.
+
+    Returns
+    -------
+    bb : binary_type
+        The N first bytes.
+
     """
     bb = binary_type()
     while len(bb) < N:

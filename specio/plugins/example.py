@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2015, imageio contributors
-# imageio is distributed under the terms of the (new) BSD License.
+"""Example plugin. You can use this as a template for your own plugin."""
 
-""" Example plugin. You can use this as a template for your own plugin.
-"""
+# Copyright (c) 2017
+# Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
+# License: BSD 3 clause
 
 from __future__ import absolute_import, print_function, division
 
@@ -90,7 +89,7 @@ class DummyFormat(Format):
             im = np.frombuffer(self._data, 'uint8')
             im.shape = len(im), 1
             # Return array and dummy meta data
-            return im, {}
+            return im, im, {}
 
         def _get_meta_data(self, index):
             # Get the meta data for the given index. If index is None, it

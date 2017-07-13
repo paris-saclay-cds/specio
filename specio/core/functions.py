@@ -1,6 +1,12 @@
+"""User interface function to read spectra."""
+
+# Copyright (c) 2017
+# Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
+# License: BSD 3 clause
+
 from __future__ import print_function
 
-from .. import Request
+from . import Request
 from .. import formats
 
 
@@ -67,14 +73,14 @@ def get_reader(uri, format=None, mode='?', **kwargs):
 # Images
 
 
-def imread(uri, format=None, **kwargs):
-    """ imread(uri, format=None, **kwargs)
+def specread(uri, format=None, **kwargs):
+    """ specread(uri, format=None, **kwargs)
 
     Reads an image from the specified file. Returns a numpy array, which
     comes with a dict of meta data at its 'meta' attribute.
 
     Note that the image data is returned as-is, and may not always have
-    a dtype of uint8 (and thus may differ from what e.g. PIL returns).
+    a dtype of uint8.
 
     Parameters
     ----------
@@ -90,7 +96,7 @@ def imread(uri, format=None, **kwargs):
     """
 
     # Get reader and read first
-    reader = read(uri, format, 'i', **kwargs)
+    reader = read(uri, format, 's', **kwargs)
     with reader:
         return reader.get_data(0)
 
