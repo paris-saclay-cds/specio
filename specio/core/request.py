@@ -20,8 +20,8 @@ class Request(object):
     Represents a request for reading an spectra resource. This object wraps
     information to that request and acts as an interface for the plugins to
     several resources; it allows the user to read from filenames, files but
-    offer a simple interface to the plugins via ``get_file()`` and
-    ``get_local_filename()``.
+    offer a simple interface to the plugins via :func:`get_file` and
+    :func:`specio.get_local_filename`.
 
     For each read operation a single Request instance is used and passed to the
     can_read method of a format, and subsequently to the Reader class. This

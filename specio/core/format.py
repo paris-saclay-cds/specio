@@ -119,7 +119,7 @@ class Format(object):
         Returns
         -------
         reader : Format.Reader
-            Reader instance allowing to read the data.
+            :class:`specio.Reader` instance allowing to read the data.
 
         """
         select_mode = request.mode if request.mode in 'sS' else ''
@@ -216,13 +216,27 @@ class Format(object):
             return self._get_length()
 
         def get_data(self, index, **kwargs):
-            """ get_data(index, **kwargs)
+            """Read the data from the file and return a ``Spectrum`` instance.
 
-            Read data from the file, using the spectrum index. The
-            returned spectrum has a 'meta' attribute with the meta data.
+            Read data from the file, using the spectrum index. The returned
+            spectrum has a ``meta`` attribute with the meta data.
 
             Some formats may support additional keyword arguments. These are
             listed in the documentation of those formats.
+
+            Parameters
+            ----------
+            index : int
+                The index of the spectra file to read.
+
+            kwargs: dict
+                Additional arguments which might used by the given format.
+
+            Returns
+            -------
+            spectrum : Spectrum
+                A ``Spectrum`` instance containing the data and metadata.
+
             """
             self._checkClosed()
             self._BaseReader_last_index = index
@@ -230,25 +244,45 @@ class Format(object):
             return Spectrum(spectrum, wavelength, meta)
 
         def get_next_data(self, **kwargs):
-            """ get_next_data(**kwargs)
-
-            Read the next spectra from the series.
+            """Read the next spectra from the series.
 
             Some formats may support additional keyword arguments. These are
             listed in the documentation of those formats.
+
+            Parameters
+            ----------
+            kwargs: dict
+                Additional arguments which might used by the given format.
+
+            Returns
+            -------
+            spectrum : Spectrum
+                A ``Spectrum`` instance containing the data and metadata.
+
             """
             return self.get_data(self._BaseReader_last_index + 1, **kwargs)
 
         def get_meta_data(self, index=None):
-            """ get_meta_data(index=None)
+            """Read the meta data for a given spectrum.
 
             Read meta data from the file. using the spectrum index. If the
             index is omitted or None, return the file's (global) meta data.
 
-            Note that ``get_data`` also provides the meta data for the returned
-            spectra as an atrribute of that spectra.
+            Parameters
+            ----------
+            index : int
+                The index of the spectra file to read.
 
-            The meta data is a dict, which shape depends on the format.
+            Returns
+            -------
+            meta : dict
+                A dictionary containing the meta data.
+
+            Notes
+            -----
+            :func:`get_data` also provides the meta data for the returned
+            spectra as an attribute of that spectra.
+
             """
             self._checkClosed()
             meta = self._get_meta_data(index)
@@ -258,10 +292,19 @@ class Format(object):
             return meta
 
         def iter_data(self):
-            """ iter_data()
+            """Iterate over all spectrum in the series.
 
-            Iterate over all spectrum in the series. (Note: you can also
-            iterate over the reader object.)
+            Parameters
+            ----------
+            None
+
+            Returns
+            -------
+            None
+
+            Notes
+            -----
+            You can also iterate over the reader object.
 
             """
             self._checkClosed()
@@ -302,8 +345,18 @@ class Format(object):
                 pass  # Remove noise when called during interpreter shutdown
 
         def close(self):
-            """ Flush and close the reader.
+            """Flush and close the reader.
+
             This method has no effect if it is already closed.
+
+            Parameters
+            ----------
+            None
+
+            Returns
+            -------
+            None
+
             """
             if self.__closed:
                 return
@@ -314,13 +367,9 @@ class Format(object):
 
         @property
         def closed(self):
-            """ Whether the reader is closed.
-            """
             return self.__closed
 
         def _checkClosed(self, msg=None):
-            """Internal: raise an ValueError if reader is closed
-            """
             if self.closed:
                 what = self.__class__.__name__
                 msg = msg or ("I/O operation on closed %s." % what)
@@ -329,69 +378,66 @@ class Format(object):
         # To implement
 
         def _open(self, **kwargs):
-            """ _open(**kwargs)
+            """Plugins should probably implement this.
 
-            Plugins should probably implement this.
+            It is called when reader is created. Here the plugin can do its
+            initialization. The given keyword arguments are those that were
+            given by the user at specio.read().
 
-            It is called when reader is created. Here the
-            plugin can do its initialization. The given keyword arguments
-            are those that were given by the user at specio.read().
             """
             raise NotImplementedError()
 
         def _close(self):
-            """ _close()
+            """Plugins should probably implement this.
 
-            Plugins should probably implement this.
-
-            It is called when the reader is closed. Here the plugin
-            can do a cleanup, flush, etc.
+            It is called when the reader is closed. Here the plugin can do a
+            cleanup, flush, etc.
 
             """
             raise NotImplementedError()
 
         def _get_length(self):
-            """ _get_length()
+            """Plugins must implement this.
 
-            Plugins must implement this.
-
-            The retured scalar specifies the number of spectra in the series.
+            The returned scalar specifies the number of spectra in the series.
             See Reader.get_length for more information.
+
             """
             raise NotImplementedError()
 
         def _get_data(self, index):
-            """ _get_data()
-
-            Plugins must implement this, but may raise an IndexError in
+            """Plugins must implement this, but may raise an IndexError in
             case the plugin does not support random access.
 
             It should return the spectra and meta data: (ndarray, dict).
+
             """
             raise NotImplementedError()
 
         def _get_meta_data(self, index):
-            """ _get_meta_data(index)
-
-            Plugins must implement this.
+            """Plugins must implement this.
 
             It should return the meta data as a dict, corresponding to the
-            given index, or to the file's (global) meta data if index is
-            None.
+            given index, or to the file's (global) meta data if index is None.
+
             """
             raise NotImplementedError()
 
 
 class FormatManager(object):
-    """
+    """Format manager containing all the registered formats.
+
     There is exactly one FormatManager object in specio: ``specio.formats``.
     Its purpose it to keep track of the registered formats.
 
     The format manager supports getting a format object using indexing (by
-    format name or extension). When used as an iterator, this object
-    yields all registered format objects.
+    format name or extension). When used as an iterator, this object yields all
+    registered format objects.
 
-    See also :func:`.help`.
+    See also
+    --------
+    :func:`.help`.
+
     """
 
     def __init__(self):
@@ -458,19 +504,31 @@ class FormatManager(object):
         return - ((val.name == name) + (val.name.endswith(name)))
 
     def sort(self, *names):
-        """ sort(name1, name2, name3, ...)
+        """Sort the registered format.
 
-        Sort the formats based on zero or more given names; a format with
-        a name that matches one of the given names will take precedence
-        over other formats. A match means an equal name, or ending with
-        that name (though the former counts higher). Case insensitive.
+        Sort the formats based on zero or more given names; a format with a
+        name that matches one of the given names will take precedence over
+        other formats. A match means an equal name, or ending with that name
+        (though the former counts higher). Case insensitive.
 
-        Be aware that using the function can affect the behavior of
-        other code that makes use of imageio.
+        Be aware that using the function can affect the behavior of other code
+        that makes use of specio.
 
-        Also see the ``SPECIO_FORMAT_ORDER`` environment variable.
+        Parameters
+        ----------
+        names : list of str
+            Sequence of format name which need to be sorted.
+
+        Returns
+        -------
+        None
+
+        See also
+        --------
+        ``SPECIO_FORMAT_ORDER`` environment variable.
+
         """
-        # Check and sanitize imput
+        # Check and sanitize input
         for name in names:
             if not isinstance(name, string_types):
                 raise TypeError('formats.sort() accepts only string names.')
@@ -486,11 +544,20 @@ class FormatManager(object):
                 key=lambda f: - ((f.name == name) + (f.name.endswith(name))))
 
     def add_format(self, format, overwrite=False):
-        """ add_format(format, overwrite=False)
+        """Register a given format.
 
-        Register a format, so that imageio can use it. If a format with the
-        same name already exists, an error is raised, unless overwrite is True,
-        in which case the current format is replaced.
+        Parameters
+        ----------
+        format : specio.Format
+            The format to be registered.
+
+        overwrite : bool, (default=False) If False, a format with the same name
+            will raise an error. If True, it will replace it.
+
+        Returns
+        -------
+        None
+
         """
         if not isinstance(format, Format):
             raise ValueError('add_format needs argument to be a Format object')
@@ -509,10 +576,21 @@ class FormatManager(object):
         self._formats_sorted.append(format)
 
     def search_read_format(self, request):
-        """ search_read_format(request)
+        """Search a specific format.
 
         Search a format that can read a file according to the given request.
-        Returns None if no appropriate format was found. (used internally)
+
+        Parameters
+        ----------
+        request : specio.Request
+            The request to read a specific resource.
+
+        Returns
+        -------
+        format : specio.Format or None
+            Returns the :class:`specio.Format` found or None if no appropriate
+        format was found.
+
         """
         select_mode = request.mode if request.mode in 'sS' else ''
         select_ext = request.filename.lower()
@@ -536,41 +614,10 @@ class FormatManager(object):
                 if format.can_read(request):
                     return format
 
-    def search_write_format(self, request):
-        """ search_write_format(request)
-
-        Search a format that can write a file according to the given request.
-        Returns None if no appropriate format was found. (used internally)
-        """
-        select_mode = request.mode if request.mode in 'sS' else ''
-        select_ext = request.filename.lower()
-
-        # Select formats that seem to be able to write it
-        selected_formats = []
-        for format in self:
-            if select_mode in format.modes:
-                if select_ext.endswith(format.extensions):
-                    selected_formats.append(format)
-
-        # Select the first that can
-        for format in selected_formats:
-            if format.can_write(request):
-                return format
-
-        # If none of the selected formats could write it, maybe another
-        # format can still write it. It might prefer a different mode,
-        # or be able to handle more formats than it says by its extensions.
-        for format in self:
-            if format not in selected_formats:
-                if format.can_write(request):
-                    return format
-
     def get_format_names(self):
-        """ Get the names of all registered formats.
-        """
+        """ Get the names of all registered formats."""
         return [f.name for f in self]
 
     def show(self):
-        """ Show a nicely formatted list of available formats
-        """
+        """ Show a nicely formatted list of available formats."""
         print(self)
