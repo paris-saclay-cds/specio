@@ -6,8 +6,6 @@
 
 import os
 import sys
-import tempfile
-import shutil
 from six import string_types, binary_type
 
 URI_FILE = 2
@@ -54,9 +52,11 @@ class Request(object):
         self._filename = None
         self._kwargs = kwargs
 
+        # To handle the user-side
+        self._bytes = None  # Incoming bytes
+
         # To handle the plugin side
         self._file = None               # To store the file instance
-        self._filename_local = None     # not None if using tempfile on this FS
         self._firstbytes = None         # For easy header parsing
 
         # To store formats that may be able to fulfil this request
@@ -178,8 +178,7 @@ class Request(object):
         """Get the filename of the resource.
 
         If the filename is an existing file on this filesystem, return
-        that. Otherwise a temporary file is created on the local file system
-        which can be used by the format to read from.
+        that.
 
         Parameters
         ----------
@@ -194,14 +193,8 @@ class Request(object):
 
         if self._uri_type == URI_FILENAME:
             return self._filename
-        else:
-            # Get filename
-            ext = os.path.splitext(self._filename)[1]
-            self._filename_local = tempfile.mktemp(ext, 'imageio_')
-            # Write stuff to it?
-            with open(self._filename_local, 'wb') as file:
-                shutil.copyfileobj(self.get_file(), file)
-            return self._filename_local
+        elif self._uri_type == URI_FILE:
+            return self._file.name
 
     def _finish(self):
         """For internal use (called when the context of the reader
@@ -212,14 +205,6 @@ class Request(object):
         if self._file and self._uri_type != URI_FILE:
             self._file.close()
             self._file = None
-        # Remove temp file
-        if self._filename_local:
-            try:
-                os.remove(self._filename_local)
-            except Exception:
-                pass
-            self._filename_local = None
-
         # Detach so gc can clean even if a reference of self lingers
         self._bytes = None
 
@@ -232,34 +217,25 @@ class Request(object):
         return self._firstbytes
 
     def _read_first_bytes(self, N=256):
-        if self._bytes is not None:
-            self._firstbytes = self._bytes[:N]
-        else:
-            # Prepare
-            try:
-                f = self.get_file()
-            except IOError:
-                if os.path.isdir(self.filename):  # A directory, e.g. for DICOM
-                    self._firstbytes = binary_type()
-                    return
-                raise
-            try:
-                i = f.tell()
-            except Exception:
-                i = None
-            # Read
-            self._firstbytes = read_n_bytes(f, N)
-            # Set back
-            try:
-                if i is None:
-                    raise Exception('cannot seek with None')
-                f.seek(i)
-            except Exception:
-                # Prevent get_file() from reusing the file
-                self._file = None
-                # If the given URI was a file object, we have a problem,
-                if self._uri_type == URI_FILE:
-                    raise IOError('Cannot seek back after getting firstbytes!')
+        # Prepare
+        f = self.get_file()
+        try:
+            i = f.tell()
+        except Exception:
+            i = None
+        # Read
+        self._firstbytes = read_n_bytes(f, N)
+        # Set back
+        try:
+            if i is None:
+                raise Exception('cannot seek with None')
+            f.seek(i)
+        except Exception:
+            # Prevent get_file() from reusing the file
+            self._file = None
+            # If the given URI was a file object, we have a problem,
+            if self._uri_type == URI_FILE:
+                raise IOError('Cannot seek back after getting firstbytes!')
 
 
 def read_n_bytes(f, N):

@@ -78,6 +78,20 @@ class Spectrum(object):
                              ' array.')
         if not (meta is None or isinstance(meta, dict)):
             raise ValueError('Spectrum expects meta data to be a dict.')
+        if len(spectrum.shape) != 2:
+            raise ValueError("Spectrum should be a 2-dimensional array with"
+                             " shape (n_spectra, n_wavelength). Got {}"
+                             " instead.".format(spectrum.shape))
+        if len(wavelength.shape) != 1:
+            raise ValueError("Wavelength should be a 1-dimensional array with"
+                             " shape (n_wavelength). Got {}"
+                             " instead.".format(wavelength.shape))
+        if spectrum.shape[1] != wavelength.shape[0]:
+            raise ValueError("The number of wavelength in 'wavelength' and"
+                             " 'spectrum' does not agree: {} wavelengths in"
+                             " 'spectrum' and {} wavelengths in"
+                             " 'wavelength'".format(
+                                 spectrum.shape[1], wavelength.shape[0]))
         self._spectrum = spectrum
         self._wavelength = wavelength
         self._meta = meta if meta is not None else {}
