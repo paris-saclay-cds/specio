@@ -87,9 +87,9 @@ class DummyFormat(Format):
                 self._data = self._fp.read()
             # Put in a numpy array
             im = np.frombuffer(self._data, 'uint8')
-            im.shape = len(im), 1
+            im = im[np.newaxis, :]
             # Return array and dummy meta data
-            return im, im, {}
+            return im, np.squeeze(im), {}
 
         def _get_meta_data(self, index):
             # Get the meta data for the given index. If index is None, it
