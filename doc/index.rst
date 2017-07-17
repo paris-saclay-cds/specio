@@ -6,7 +6,10 @@
 Welcome to specio's documentation!
 ==================================
 
-.. automodule:: specio
+Specio is a Python library that provides an easy interface to read hypersectral
+data. It is cross-platform, runs on Python 2.x and 3.x, and is easy to
+install. This package is heavily inspired from the imageio:
+http://imageio.github.io
 
 Contents:
 

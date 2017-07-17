@@ -26,12 +26,10 @@ git reset --hard origin/gh-pages
 git rm -rf $dir/ && rm -rf $dir/
 cp -R $HOME/specio/doc/_build/html $dir
 touch $dir/.nojekyll
-touch .nojekyll
 git config --global user.email $EMAIL
 git config --global user.name $USERNAME
 git config --global push.default matching
 git add -f $dir/
-git add .nojekyll
 git commit -m "$MSG" $dir
 git push
 
