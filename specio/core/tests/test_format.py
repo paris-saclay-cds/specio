@@ -226,11 +226,18 @@ def test_format_manager():
     assert formats['test'] is not myformat
     assert formats['test'] is myformat2
 
+    assert_raises_regex(ValueError, "No format matches the empty string",
+                        formats.__getitem__, '')
+
     formats.show()
 
 
 def test_sorting_errors():
-    assert_raises_regex(TypeError, "formats.sort() accepts only string names.",
+    assert_raises_regex(TypeError, "accepts only string names.",
                         formats.sort, 3)
-    assert_raises_regex(ValueError, "ddf", formats.sort, 'foo, bar')
-    assert_raises_regex(ValueError, "ghfld", formats.sort, 'foo.png')
+    assert_raises_regex(ValueError,
+                        "should not contain dots or commas.",
+                        formats.sort, 'foo, bar')
+    assert_raises_regex(ValueError,
+                        "should not contain dots or commas.",
+                        formats.sort, 'foo.png')

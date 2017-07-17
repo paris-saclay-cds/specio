@@ -472,7 +472,7 @@ class FormatManager(object):
         # Test if name is existing file
         if os.path.isfile(name):
             from . import Request
-            format = self.search_read_format(Request(name, 'r?'))
+            format = self.search_read_format(Request(name, '?'))
             if format is not None:
                 return format
 
