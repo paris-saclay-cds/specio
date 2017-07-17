@@ -5,6 +5,8 @@
 # License: BSD 3 clause
 
 import gc
+import shutil
+from tempfile import mkdtemp
 from os.path import dirname, join
 
 import numpy as np
@@ -163,24 +165,27 @@ def test_default_can_read():
 
 def test_format_selection():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
-    # TODO: make a temporary folder for those file
-    fname2 = join(DATA_PATH, 'data', 'test.selectext1')
-    fname3 = join(DATA_PATH, 'data', 'test.haha')
+    test_dir = mkdtemp()
+    fname2 = join(test_dir, 'test.selectext1')
+    fname3 = join(test_dir, 'test.haha')
     open(fname2, 'wb')
     open(fname3, 'wb')
 
-    F = formats.search_read_format(Request(filename, 's'))
-    assert F is formats['DUMMY']
+    try:
+        F = formats.search_read_format(Request(filename, 's'))
+        assert F is formats['DUMMY']
 
-    # Now with custom format
-    format = MyFormat('test_selection', 'xx', 'selectext1', 's')
-    formats.add_format(format)
-    assert '.selectext1' in fname2
-    F = formats.search_read_format(Request(fname2, 's'))
-    assert F is format
-    assert '.haha' in fname3
-    F = formats.search_read_format(Request(fname3, 's'))
-    assert F is format
+        # Now with custom format
+        format = MyFormat('test_selection', 'xx', 'selectext1', 's')
+        formats.add_format(format)
+        assert '.selectext1' in fname2
+        F = formats.search_read_format(Request(fname2, 's'))
+        assert F is format
+        assert '.haha' in fname3
+        F = formats.search_read_format(Request(fname3, 's'))
+        assert F is format
+    finally:
+        shutil.rmtree(test_dir)
 
 
 def test_format_manager():
@@ -222,3 +227,10 @@ def test_format_manager():
     assert formats['test'] is myformat2
 
     formats.show()
+
+
+def test_sorting_errors():
+    assert_raises_regex(TypeError, "formats.sort() accepts only string names.",
+                        formats.sort, 3)
+    assert_raises_regex(ValueError, "ddf", formats.sort, 'foo, bar')
+    assert_raises_regex(ValueError, "ghfld", formats.sort, 'foo.png')
