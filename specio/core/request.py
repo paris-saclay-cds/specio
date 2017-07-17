@@ -131,14 +131,17 @@ class Request(object):
 
     @property
     def filename(self):
+        """Filename of the resource."""
         return self._filename
 
     @property
     def mode(self):
+        """Mode of the request."""
         return self._mode
 
     @property
     def kwargs(self):
+        """Keywords required to read the file."""
         return self._kwargs
 
     # For obtaining data

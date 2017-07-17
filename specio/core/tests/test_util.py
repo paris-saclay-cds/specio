@@ -44,11 +44,11 @@ def test_spectrum():
                                     0.071036, 0.087129, 0.020218, 0.83262,
                                     0.778157,  0.870012])
 
-    assert_allclose(spec._spectrum, spectrum_expected,
+    assert_allclose(spec.spectrum, spectrum_expected,
                     rtol=RELATIVE_TOLERANCE)
-    assert_allclose(spec._wavelength, wavelength_expected,
+    assert_allclose(spec.wavelength, wavelength_expected,
                     rtol=RELATIVE_TOLERANCE)
-    assert spec._meta == {'kind': 'random'}
+    assert spec.meta == {'kind': 'random'}
 
 
 def test_util_dict():

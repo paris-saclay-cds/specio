@@ -83,6 +83,7 @@ class Format(object):
 
     @property
     def doc(self):
+        """Format documention."""
         # Our docsring is assumed to be indented by four spaces. The
         # first line needs special attention.
         return '%s - %s\n\n    %s\n' % (self.name, self.description,
@@ -90,18 +91,22 @@ class Format(object):
 
     @property
     def name(self):
+        """Format name."""
         return self._name
 
     @property
     def description(self):
+        """Format description."""
         return self._description
 
     @property
     def extensions(self):
+        """Format extension."""
         return self._extensions
 
     @property
     def modes(self):
+        """Format modes."""
         return self._modes
 
     def get_reader(self, request):
@@ -434,12 +439,7 @@ class FormatManager(object):
     format name or extension). When used as an iterator, this object yields all
     registered format objects.
 
-    See also
-    --------
-    :func:`.help`.
-
     """
-
     def __init__(self):
         self._formats = []
         self._formats_sorted = []
@@ -523,10 +523,6 @@ class FormatManager(object):
         -------
         None
 
-        See also
-        --------
-        ``SPECIO_FORMAT_ORDER`` environment variable.
-
         """
         # Check and sanitize input
         for name in names:
@@ -551,8 +547,9 @@ class FormatManager(object):
         format : specio.Format
             The format to be registered.
 
-        overwrite : bool, (default=False) If False, a format with the same name
-            will raise an error. If True, it will replace it.
+        overwrite : bool, (default=False)
+            If False, a format with the same name will raise an error. If True,
+            it will replace it.
 
         Returns
         -------
@@ -588,8 +585,8 @@ class FormatManager(object):
         Returns
         -------
         format : specio.Format or None
-            Returns the :class:`specio.Format` found or None if no appropriate
-        format was found.
+            Returns the specio.Format found or None if no appropriate
+            format was found.
 
         """
         select_mode = request.mode if request.mode in 'sS' else ''
@@ -615,9 +612,9 @@ class FormatManager(object):
                     return format
 
     def get_format_names(self):
-        """ Get the names of all registered formats."""
+        """Get the names of all registered formats."""
         return [f.name for f in self]
 
     def show(self):
-        """ Show a nicely formatted list of available formats."""
+        """Show a nicely formatted list of available formats."""
         print(self)

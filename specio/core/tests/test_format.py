@@ -129,15 +129,15 @@ def test_reader():
     specs = [spec for spec in R]
     assert len(specs) == n
     for i in range(3):
-        assert specs[i]._spectrum[0, 0] == i
-        assert specs[i]._wavelength[0] ==  i
-        assert specs[i]._meta['index'] == i
+        assert specs[i].spectrum[0, 0] == i
+        assert specs[i].wavelength[0] ==  i
+        assert specs[i].meta['index'] == i
     for i in range(3):
         assert R.get_meta_data(i)['index'] == i
     # Read next
-    assert R.get_data(0)._spectrum[0, 0] == 0
-    assert R.get_next_data()._spectrum[0, 0] == 1
-    assert R.get_next_data()._spectrum[0, 0] == 2
+    assert R.get_data(0).spectrum[0, 0] == 0
+    assert R.get_next_data().spectrum[0, 0] == 1
+    assert R.get_next_data().spectrum[0, 0] == 2
     # Fail
     R._failmode = 1
     assert_raises_regex(ValueError, "unpack",

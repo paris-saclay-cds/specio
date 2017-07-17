@@ -92,15 +92,15 @@ class Spectrum(object):
                              " 'spectrum' and {} wavelengths in"
                              " 'wavelength'".format(
                                  spectrum.shape[1], wavelength.shape[0]))
-        self._spectrum = spectrum
-        self._wavelength = wavelength
-        self._meta = meta if meta is not None else {}
+        self.spectrum = spectrum
+        self.wavelength = wavelength
+        self.meta = meta if meta is not None else {}
 
     def __repr__(self):
         msg = ("Spectrum: \n"
                "wavelength:\n {} \n"
                "spectra: \n {} \n"
-               "metadata: \n {} \n".format(self._wavelength,
-                                           self._spectrum,
-                                           self._meta))
+               "metadata: \n {} \n".format(self.wavelength,
+                                           self.spectrum,
+                                           self.meta))
         return msg

@@ -22,5 +22,5 @@ def test_dummy_format():
     assert reader.get_length() == 1
     assert reader.get_meta_data() == {}
     spec = reader.get_data(0)
-    assert spec._spectrum.shape == (1, 801)
-    assert spec._wavelength.shape == (801,)
+    assert spec.spectrum.shape == (1, 801)
+    assert spec.wavelength.shape == (801,)
