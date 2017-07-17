@@ -140,7 +140,7 @@ def test_reader():
     assert R.get_next_data()._spectrum[0, 0] == 2
     # Fail
     R._failmode = 1
-    assert_raises_regex(ValueError, "not enough values to unpack",
+    assert_raises_regex(ValueError, "unpack",
                         R.get_data, 0)
     assert_raises_regex(ValueError, "Meta data must be a dict,",
                         R.get_meta_data, 0)

@@ -34,8 +34,9 @@ AUTHOR = "Guillaume Lemaitre"
 AUTHOR_EMAIL = "g.lemaitre58@gmail.com"
 PLATFORMS = "OS Independent"
 VERSION = __version__
-PACKAGE_DATA = {}
-REQUIRES = ["numpy", "pandas", "scipy", "matplotlib", "six"]
+PACKAGE_DATA = {'specio': ['core/tests/data/*.*',
+                           'plugins/tests/data/*.*']}
+REQUIRES = ["numpy", "six"]
 
 opts = dict(name=NAME,
             maintainer=MAINTAINER,
@@ -52,6 +53,7 @@ opts = dict(name=NAME,
             version=VERSION,
             packages=PACKAGES,
             package_data=PACKAGE_DATA,
+            include_package_data=True,
             install_requires=REQUIRES)
 
 
