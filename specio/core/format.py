@@ -177,7 +177,7 @@ class Format(object):
             self._BaseReader_last_index = -1
             self._format = format
             self._request = request
-            # Open the reader/writer
+            # Open the reader
             self._open(**self.request.kwargs.copy())
 
         @property

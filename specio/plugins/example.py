@@ -53,6 +53,7 @@ class DummyFormat(Format):
         if request.mode in (self.modes + '?'):
             if request.filename.lower().endswith(self.extensions):
                 return True
+        return False
     # -- reader
 
     class Reader(Format.Reader):
@@ -86,10 +87,10 @@ class DummyFormat(Format):
             if self._data is None:
                 self._data = self._fp.read()
             # Put in a numpy array
-            im = np.frombuffer(self._data, 'uint8')
-            im = im[np.newaxis, :]
+            spec = np.frombuffer(self._data, 'uint8')
+            spec = spec[np.newaxis, :]
             # Return array and dummy meta data
-            return im, np.squeeze(im), {}
+            return spec, np.squeeze(spec), {}
 
         def _get_meta_data(self, index):
             # Get the meta data for the given index. If index is None, it
@@ -101,6 +102,6 @@ class DummyFormat(Format):
 format = DummyFormat('dummy',  # short name
                      'An example format that does nothing.',  # one line descr.
                      '.foobar .nonexistentext',  # list of extensions
-                     'sS'  # modes, characters in iIvV
+                     'sS'  # modes, characters in sS
                      )
 formats.add_format(format)
