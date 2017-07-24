@@ -63,7 +63,7 @@ class Spectrum(object):
     spectrum : ndarray, shape (n_spectra, n_wavelength)
         The spectrum read.
 
-    wavelength : ndarray, shape (n_wavelength,)
+    wavelength : ndarray, shape (n_wavelength,) or (n_spectra, n_wavelength)
         The corresponding wavelength.
 
     meta : dict
@@ -82,16 +82,25 @@ class Spectrum(object):
             raise ValueError("Spectrum should be a 2-dimensional array with"
                              " shape (n_spectra, n_wavelength). Got {}"
                              " instead.".format(spectrum.shape))
-        if len(wavelength.shape) != 1:
-            raise ValueError("Wavelength should be a 1-dimensional array with"
+        if len(wavelength.shape) > 2:
+            raise ValueError("Wavelength should be a 1-dimensional or"
+                             " 2-dimensional array with"
                              " shape (n_wavelength). Got {}"
                              " instead.".format(wavelength.shape))
-        if spectrum.shape[1] != wavelength.shape[0]:
-            raise ValueError("The number of wavelength in 'wavelength' and"
-                             " 'spectrum' does not agree: {} wavelengths in"
-                             " 'spectrum' and {} wavelengths in"
-                             " 'wavelength'".format(
-                                 spectrum.shape[1], wavelength.shape[0]))
+        if len(wavelength.shape) == 1:
+            if spectrum.shape[1] != wavelength.shape[0]:
+                raise ValueError("The number of wavelength in 'wavelength' and"
+                                 " 'spectrum' does not agree: {} wavelengths"
+                                 " in 'spectrum' and {} wavelengths in"
+                                 " 'wavelength'".format(
+                                     spectrum.shape[1], wavelength.shape[0]))
+        else:
+            if spectrum.shape[1] != wavelength.shape[1]:
+                raise ValueError("The number of wavelength in 'wavelength' and"
+                                 " 'spectrum' does not agree: {} wavelengths"
+                                 " in 'spectrum' and {} wavelengths in"
+                                 " 'wavelength'".format(
+                                     spectrum.shape[1], wavelength.shape[1]))
         self.spectrum = spectrum
         self.wavelength = wavelength
         self.meta = meta if meta is not None else {}

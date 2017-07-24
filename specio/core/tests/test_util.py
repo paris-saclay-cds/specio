@@ -24,12 +24,15 @@ def test_spectrum_error():
     assert_raises_regex(ValueError, "2-dimensional",
                         Spectrum, np.random.random((100, 100, 100)),
                         np.random.random(100,))
-    assert_raises_regex(ValueError, "1-dimensional",
+    assert_raises_regex(ValueError, "1-dimensional or 2-dimensional",
                         Spectrum, np.random.random((100, 100)),
-                        np.random.random((100, 100)))
+                        np.random.random((100, 100, 100)))
     assert_raises_regex(ValueError, "The number of wavelength in",
                         Spectrum, np.random.random((100, 1000)),
                         np.random.random((100,)))
+    assert_raises_regex(ValueError, "The number of wavelength in",
+                        Spectrum, np.random.random((100, 1000)),
+                        np.random.random((1000, 100)))
 
 
 def test_spectrum():
@@ -49,6 +52,25 @@ def test_spectrum():
     assert_allclose(spec.wavelength, wavelength_expected,
                     rtol=RELATIVE_TOLERANCE)
     assert spec.meta == {'kind': 'random'}
+
+    spec = Spectrum(rng.random_sample((1, 10)), rng.random_sample((1, 10)),
+                    {'kind': 'random'})
+
+    spectrum_expected = np.array([[0.97861834, 0.79915856, 0.46147936,
+                                   0.78052918, 0.11827443, 0.63992102,
+                                   0.14335329, 0.94466892, 0.52184832,
+                                   0.41466194]])
+    wavelength_expected = np.array([[0.26455561, 0.77423369, 0.45615033,
+                                     0.56843395, 0.0187898, 0.6176355,
+                                     0.61209572, 0.616934, 0.94374808,
+                                     0.6818203]])
+
+    assert_allclose(spec.spectrum, spectrum_expected,
+                    rtol=RELATIVE_TOLERANCE)
+    assert_allclose(spec.wavelength, wavelength_expected,
+                    rtol=RELATIVE_TOLERANCE)
+    assert spec.meta == {'kind': 'random'}
+
 
 
 def test_util_dict():
