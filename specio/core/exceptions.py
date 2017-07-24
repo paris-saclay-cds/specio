@@ -10,3 +10,8 @@ class CannotReadSpectraError(RuntimeError):
     read, even though it should be a valid index.
     """
     pass
+
+
+class VersionError(ValueError):
+    """Exception to be used when a version is not supported."""
+    pass
