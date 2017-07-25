@@ -57,7 +57,7 @@ fi
 cd
 mkdir -p download
 cd download
-git clone git@github.com:rohanisaac/spc.git
+git clone https://github.com/rohanisaac/spc.git
 cd spc
 pip install .
 
