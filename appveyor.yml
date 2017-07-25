@@ -40,7 +40,7 @@ install:
   - "git clone https://github.com/rohanisaac/spc.git"
   - "cd spc"
   - "python setup.py install"
-  - "cd $env:appveyor_build_folder"
+  - "cd %APPVEYOR_BUILD_FOLDER%"
 
   # Install other specio dependencies
   - "python setup.py bdist_wheel"

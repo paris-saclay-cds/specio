@@ -147,23 +147,15 @@ def create_format_docs():
 
     # Get bullet list of all formats
     ss = ['\n']
-    covered_formats = []
-    modemap = {'s': 'Single spectrum', 'S': 'Multiple spectra'}
-    for mode in 'sS':
-        subtitle = modemap.get(mode, 'Unsorted')
-        subs = []
-        for format in specio.formats:
-            if ((mode in format.modes) or
-                    (mode == '-' and format not in covered_formats)):
-                covered_formats.append(format)
-                s = '  * :ref:`%s <%s>` - %s' % (format.name,
-                                                 format.name,
-                                                 format.description)
-                subs.append(s)
-        if subs:
-            ss.append('%s\n%s\n' % (subtitle, '^' * len(subtitle)))
-            ss.extend(subs)
-            ss.append('')
+    subs = []
+    for format in specio.formats:
+        s = '  * :ref:`%s <%s>` - %s' % (format.name,
+                                         format.name,
+                                         format.description)
+        subs.append(s)
+    if subs:
+        ss.extend(subs)
+        ss.append('')
 
     text += '\n'.join(ss) + '\n\n'
     _write('formats.rst', text)
