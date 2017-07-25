@@ -34,20 +34,19 @@ class SPC(Format):
     """
 
     def _can_read(self, request):
-        if request.mode in (self.modes + '?'):
-            if request.filename.lower().endswith(self.extensions):
-                # check that the first byte contain a version supported by spc
-                content = read_n_bytes(request.get_file(), 2)
-                _, version = struct.unpack('<cc'.encode('utf8'), content)
-                if version not in VERSION_SUPPORTED:
-                    raise VersionError("The version {} is not yet supported."
-                                       " Current supported version are"
-                                       " {}.".format(version,
-                                                     VERSION_SUPPORTED))
-                if version == b'\xcf':
-                    warnings.warn("Support for this version is highly"
-                                  " experimental.")
-                return True
+        if request.filename.lower().endswith(self.extensions):
+            # check that the first byte contain a version supported by spc
+            content = read_n_bytes(request.get_file(), 256)
+            _, version = struct.unpack('<cc'.encode('utf8'), content[:2])
+            if version not in VERSION_SUPPORTED:
+                raise VersionError("The version {} is not yet supported."
+                                   " Current supported version are"
+                                   " {}.".format(version,
+                                                 VERSION_SUPPORTED))
+            if version == b'\xcf':
+                warnings.warn("Support for this version is highly"
+                              " experimental.")
+            return True
         return False
     # -- reader
 
@@ -70,9 +69,9 @@ class SPC(Format):
             """
             if spc_file.fversn == b'\x4b':
                 meta = {'ftflg': spc_file.ftflg,
-                        'fversn': spc_file.versn
+                        'fversn': spc_file.fversn,
                         'fexpr': spc_file.fexper,
-                        'fexp' : spc_file.fexp,
+                        'fexp': spc_file.fexp,
                         'fnpts': spc_file.fnpts,
                         'ffirst': spc_file.ffirst,
                         'flast': spc_file.flast,
@@ -114,7 +113,6 @@ class SPC(Format):
                         'hour': spc_file.hour,
                         'minute': spc_file.minute,
                         'cmnt': spc_file.cmnt,
-                        'dat_multi': spc_file.dat_multi,
                         'dat_fmt': spc_file.dat_fmt,
                         'logsizd': spc_file.logsizd,
                         'logsizm': spc_file.logsizm,
@@ -159,8 +157,7 @@ class SPC(Format):
 
             return meta
 
-        @staticmethod
-        def _spc_to_numpy(spc_file):
+        def _spc_to_numpy(self, spc_file):
             """Convert the SPC File data to spectrum data.
 
             Parameters
@@ -186,8 +183,9 @@ class SPC(Format):
 
         def _open(self):
             # Open the reader
-            self._fp = self.request.get_filename()
+            self._fp = self.request.get_local_filename()
             self._data = self._spc_to_numpy(spc.File(self._fp))
+            self._length = self._data.spectrum.shape[0]
 
         def _close(self):
             # Close the reader.
@@ -199,7 +197,11 @@ class SPC(Format):
             # Give the number of spectra
             return self._length
 
-        def _get_data(self, index):
+        def _get_data(self, index=None):
+            if index is None:
+                return (self._data.spectrum,
+                        self._data.wavelength,
+                        self._data.meta)
             if len(self._data.spectrum.shape) == 2:
                 if len(self._data.wavelength.shape) == 1:
                     return (self._data.spectrum[index, :],
@@ -221,6 +223,5 @@ class SPC(Format):
 # Register. You register an *instance* of a Format class. Here specify:
 format = SPC('SPC',
              'Galactic Industries Corporation SPC binary format',
-             '.spc',
-             'sS')
+             '.spc')
 formats.add_format(format)

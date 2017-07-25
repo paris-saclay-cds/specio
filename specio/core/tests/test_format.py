@@ -75,31 +75,24 @@ def test_format():
     # Fail
     assert_raises_regex(ValueError, "Invalid value for extensions given.",
                         Format, 'test', '', 3)
-    assert_raises_regex(ValueError, "Invalid value for modes given.",
-                        Format, 'test', '', '', 3)
-    assert_raises_regex(ValueError, "Invalid value for mode given.",
-                        Format, 'test', '', '', 'x')
 
 
 def test_format_subclass():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
-    F = MyFormat('test', '', modes='s')
+    F = MyFormat('test', '')
     assert 'TEST DOCS' in F.doc
 
     # Get and check reader and write classes
-    R = F.get_reader(Request(filename, 's'))
+    R = F.get_reader(Request(filename))
     assert isinstance(R, MyFormat.Reader)
     assert R.format is F
     assert R.request.filename == filename
-    # Fail
-    assert_raises_regex(RuntimeError, "Format TEST cannot read in mode 'S'",
-                        F.get_reader, Request(filename, 'S'))
 
 
 def test_format_context_manager():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
-    F = MyFormat('test', '', modes='s')
-    R = F.get_reader(Request(filename, 's'))
+    F = MyFormat('test', '')
+    R = F.get_reader(Request(filename))
     # Use as context manager
     with R:
         pass
@@ -110,7 +103,7 @@ def test_format_context_manager():
     assert_raises_regex(RuntimeError, "I/O operation on closed Reader.",
                         R.get_data, 0)
 
-    R = F.get_reader(Request(filename, 's'))
+    R = F.get_reader(Request(filename))
     ids = id(R)
     F._closed[:] = []
     del R
@@ -120,11 +113,11 @@ def test_format_context_manager():
 
 def test_reader():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
-    F = MyFormat('test', '', modes='s')
+    F = MyFormat('test', '')
 
     # Test using reader
     n = 3
-    R = F.get_reader(Request(filename, 's'))
+    R = F.get_reader(Request(filename))
     assert len(R) == n
     specs = [spec for spec in R]
     assert len(specs) == n
@@ -150,17 +143,15 @@ def test_reader():
 
 
 def test_default_can_read():
-    F = DummyFormat('test', '', 'foobar', 's')
+    F = DummyFormat('test', '', 'foobar')
 
     # Prepare files
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
     filename_wrong_ext = join(DATA_PATH, 'data', 'spectra.notavalidext')
 
     # Test _can_read()
-    assert F.can_read(Request(filename, 's'))
-    assert F.can_read(Request(filename, '?'))
-    assert not F.can_read(Request(filename_wrong_ext, 's'))
-    assert not F.can_read(Request(filename, 'S'))
+    assert F.can_read(Request(filename))
+    assert not F.can_read(Request(filename_wrong_ext))
 
 
 def test_format_selection():
@@ -172,17 +163,17 @@ def test_format_selection():
     open(fname3, 'wb')
 
     try:
-        F = formats.search_read_format(Request(filename, 's'))
+        F = formats.search_read_format(Request(filename))
         assert F is formats['DUMMY']
 
         # Now with custom format
-        format = MyFormat('test_selection', 'xx', 'selectext1', 's')
+        format = MyFormat('test_selection', 'xx', 'selectext1')
         formats.add_format(format)
         assert '.selectext1' in fname2
-        F = formats.search_read_format(Request(fname2, 's'))
+        F = formats.search_read_format(Request(fname2))
         assert F is format
         assert '.haha' in fname3
-        F = formats.search_read_format(Request(fname3, 's'))
+        F = formats.search_read_format(Request(fname3))
         assert F is format
     finally:
         shutil.rmtree(test_dir)

@@ -31,10 +31,6 @@ class Request(object):
     uri : {str, file}
         The resource to load the image from.
 
-    mode : str
-        This character is used to indicate the kind of data:
-        "s" for a spectrum, "S" for multiple spectra, "?" for don't care.
-
     kwargs : dict
         Keywords to pass to the plugin.
 
@@ -45,7 +41,7 @@ class Request(object):
 
     """
 
-    def __init__(self, uri, mode, **kwargs):
+    def __init__(self, uri, **kwargs):
 
         # General
         self._uri_type = None
@@ -61,15 +57,6 @@ class Request(object):
 
         # To store formats that may be able to fulfil this request
         # self._potential_formats = []
-
-        # Check mode
-        self._mode = mode
-        if not isinstance(mode, string_types):
-            raise ValueError('Request requires mode must be a string')
-        if not len(mode) == 1:
-            raise ValueError('Request requires mode to have one char')
-        if mode not in 'sS?':
-            raise ValueError('Request requires mode to be in "sS?"')
 
         # Parse what was given
         self._parse_uri(uri)
@@ -135,11 +122,6 @@ class Request(object):
         return self._filename
 
     @property
-    def mode(self):
-        """Mode of the request."""
-        return self._mode
-
-    @property
     def kwargs(self):
         """Keywords required to read the file."""
         return self._kwargs
@@ -149,9 +131,9 @@ class Request(object):
     def get_file(self):
         """Get a file object for the resource.
 
-        Get a file object for the resource associated with this request. Read
-        the file in read mode. This method is not thread safe. Plugins do not
-        need to close the file when done.
+        Get a file object for the resource associated with this request.
+        This method is not thread safe. Plugins do not need to close the file
+        when done.
 
         This is the preferred way to read the data. But if a format cannot
         handle file-like objects, they should use ``get_local_filename()``.

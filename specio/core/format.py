@@ -43,14 +43,9 @@ class Format(object):
         select a format by file extension. It is not used to determine
         what format to use for reading a file.
 
-    modes : str
-        A string containing the modes that this format can handle ('sS'),
-        's' for a single spectrum, 'S' for multiple spectrum.
-        This attribute is used in the documentation and to select the
-        formats when reading a file.
     """
 
-    def __init__(self, name, description, extensions=None, modes=None):
+    def __init__(self, name, description, extensions=None):
         self._name = name.upper()
         self._description = description
 
@@ -66,14 +61,6 @@ class Format(object):
                                       for e in extensions if e])
         else:
             raise ValueError('Invalid value for extensions given.')
-
-        # Store mode
-        self._modes = modes or ''
-        if not isinstance(self._modes, string_types):
-            raise ValueError('Invalid value for modes given.')
-        for m in self._modes:
-            if m not in 'sS?':
-                raise ValueError('Invalid value for mode given.')
 
     def __repr__(self):
         return '<Format %s - %s>' % (self.name, self.description)
@@ -104,11 +91,6 @@ class Format(object):
         """Format extension."""
         return self._extensions
 
-    @property
-    def modes(self):
-        """Format modes."""
-        return self._modes
-
     def get_reader(self, request):
         """Return a Reader instance.
 
@@ -127,10 +109,6 @@ class Format(object):
             :class:`specio.Reader` instance allowing to read the data.
 
         """
-        select_mode = request.mode if request.mode in 'sS' else ''
-        if select_mode not in self.modes:
-            raise RuntimeError('Format %s cannot read in mode %r' %
-                               (self.name, select_mode))
         return self.Reader(self, request)
 
     def can_read(self, request):
@@ -220,7 +198,7 @@ class Format(object):
             """
             return self._get_length()
 
-        def get_data(self, index, **kwargs):
+        def get_data(self, index=None, **kwargs):
             """Read the data from the file and return a ``Spectrum`` instance.
 
             Read data from the file, using the spectrum index. The returned
@@ -589,15 +567,13 @@ class FormatManager(object):
             format was found.
 
         """
-        select_mode = request.mode if request.mode in 'sS' else ''
         select_ext = request.filename.lower()
 
         # Select formats that seem to be able to read it
         selected_formats = []
         for format in self:
-            if select_mode in format.modes:
-                if select_ext.endswith(format.extensions):
-                    selected_formats.append(format)
+            if select_ext.endswith(format.extensions):
+                selected_formats.append(format)
 
         # Select the first that can
         for format in selected_formats:
