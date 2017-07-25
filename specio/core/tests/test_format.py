@@ -123,7 +123,7 @@ def test_reader():
     assert len(specs) == n
     for i in range(3):
         assert specs[i].spectrum[0, 0] == i
-        assert specs[i].wavelength[0] ==  i
+        assert specs[i].wavelength[0] == i
         assert specs[i].meta['index'] == i
     for i in range(3):
         assert R.get_meta_data(i)['index'] == i

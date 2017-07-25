@@ -107,7 +107,7 @@ class SPC(Format):
                         'talabs': spc_file.talabs,
                         'txyxys': spc_file.txyxys,
                         'txvals': spc_file.txvals,
-                        'year' : spc_file.year,
+                        'year': spc_file.year,
                         'month': spc_file.month,
                         'day': spc_file.day,
                         'hour': spc_file.hour,
