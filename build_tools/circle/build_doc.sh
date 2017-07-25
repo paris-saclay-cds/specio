@@ -94,7 +94,17 @@ source activate $CONDA_ENV_NAME
 conda install --yes pip numpy pillow matplotlib sphinx sphinx_rtd_theme numpydoc
 pip install sphinx-gallery
 
-# Build and install scikit-learn in dev mode
+# install spc dependency from master
+cd $HOME
+mkdir -p download
+cd download
+git clone git@github.com:rohanisaac/spc.git
+cd spc
+pip install .
+
+# Build and install specio in dev mode
+cd "$HOME/$CIRCLE_PROJECT_REPONAME"
+ls -l
 python setup.py develop
 
 # The pipefail is requested to propagate exit code

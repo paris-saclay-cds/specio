@@ -35,6 +35,8 @@ install:
   - "conda install pip numpy six nose wheel -y -q"
   - "pip install nose-timer nose-exclude pytest"
 
+  # Installed spc package from github
+
   # Install other specio dependencies
   - "python setup.py bdist_wheel"
   - ps: "ls dist"
