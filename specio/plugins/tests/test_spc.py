@@ -4,16 +4,13 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
-from os.path import dirname, join
-
 from specio import formats
 from specio.core import Request
-
-DATA_PATH = dirname(__file__)
+from specio.datasets import load_spc_path
 
 
 def test_spc_format():
-    filename = join(DATA_PATH, 'data', 'spectra.spc')
+    filename = load_spc_path()
 
     R = Request(filename)
     F = formats['SPC']

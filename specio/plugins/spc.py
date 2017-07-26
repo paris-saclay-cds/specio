@@ -32,6 +32,19 @@ class SPC(Format):
     information, information on one spectrum of a dataset, the spectrum itself
     or extra logs).
 
+    Examples
+    --------
+    >>> from specio import specread
+    >>> from specio.datasets import load_spc_path
+    >>> spectra = specread(load_spc_path())
+    x-y(1)
+    >>> spectra.wavelength
+    array([  400.62109375,   402.94384766,   405.26721191, ...,  3797.08911133,
+            3798.45288086,  3799.81542969])
+    >>> spectra.spectrum
+    array([[ 1487.        ,  1385.        ,  1441.        , ...,
+              147.24124146,   139.16082764,   134.08041382]])
+
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/SPC_file_format
@@ -126,7 +139,11 @@ class SPC(Format):
                         'logdsks': spc_file.logdsks,
                         'logspar': spc_file.logspar,
                         'log_dict': spc_file.log_dict,
-                        'spacing': spc_file.spacing}
+                        'spacing': spc_file.spacing,
+                        'xlabel': spc_file.xlabel,
+                        'ylabel': spc_file.ylabel,
+                        'zlabel': spc_file.zlabel,
+                        'exp_type': spc_file.exp_type}
             elif spc_file.fversn == b'\x4d':
                 meta = {'oftflgs': spc_file.oftflgs,
                         'oversn': spc_file.oversn,
@@ -156,7 +173,10 @@ class SPC(Format):
                         'talabs': spc_file.talabs,
                         'txyxys': spc_file.txyxys,
                         'txvals': spc_file.txvals,
-                        'fztype': spc_file.fztype}
+                        'fztype': spc_file.fztype,
+                        'xlabel': spc_file.xlabel,
+                        'ylabel': spc_file.ylabel,
+                        'zlabel': spc_file.zlabel}
             else:
                 meta = {}
 

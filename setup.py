@@ -35,7 +35,8 @@ AUTHOR_EMAIL = "g.lemaitre58@gmail.com"
 PLATFORMS = "OS Independent"
 VERSION = __version__
 PACKAGE_DATA = {'specio': ['core/tests/data/*.*',
-                           'plugins/tests/data/*.*']}
+                           'plugins/tests/data/*.*',
+                           'datasets/data/*.*']}
 REQUIRES = ["numpy", "six"]
 
 opts = dict(name=NAME,
