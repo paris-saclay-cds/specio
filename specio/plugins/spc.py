@@ -23,13 +23,18 @@ VERSION_SUPPORTED = (b'\x4b', b'\x4d', b'\xcf')
 
 
 class SPC(Format):
-    """Plugin to read SPC file.
+    """Plugin to read SPC file which store spectrostopic data.
 
-    Parameters
-    ----------
+    The SPC file format is a file format in which all kinds of spectroscopic
+    data, including amongst others infrared spectra, Raman spectra and UV/VIS
+    spectra. The format can be regarded as a database with records of variable
+    length and each record stores a different kind of data (instrumental
+    information, information on one spectrum of a dataset, the spectrum itself
+    or extra logs).
 
-    Attributes
+    References
     ----------
+    .. [1] https://en.wikipedia.org/wiki/SPC_file_format
 
     """
 
@@ -222,6 +227,6 @@ class SPC(Format):
 
 # Register. You register an *instance* of a Format class. Here specify:
 format = SPC('SPC',
-             'Galactic Industries Corporation SPC binary format',
+             'Galactic Industries Corporation binary format',
              '.spc')
 formats.add_format(format)
