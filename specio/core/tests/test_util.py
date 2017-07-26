@@ -21,15 +21,29 @@ def test_spectrum_error():
     assert_raises_regex(ValueError, "expects meta data to be a dict",
                         Spectrum, np.random.random((100, 100)),
                         np.random.random(100,), 0)
-    assert_raises_regex(ValueError, "2-dimensional",
+    assert_raises_regex(ValueError, "1-D or 2-D",
                         Spectrum, np.random.random((100, 100, 100)),
                         np.random.random(100,))
-    assert_raises_regex(ValueError, "1-dimensional",
+    assert_raises_regex(ValueError, "1-D or 2-D",
                         Spectrum, np.random.random((100, 100)),
-                        np.random.random((100, 100)))
-    assert_raises_regex(ValueError, "The number of wavelength in",
+                        np.random.random((100, 100, 100)))
+    assert_raises_regex(ValueError, "The number of frequencies",
                         Spectrum, np.random.random((100, 1000)),
                         np.random.random((100,)))
+    assert_raises_regex(ValueError, "The dimension of wavelength",
+                        Spectrum, np.random.random((100, 1000)),
+                        np.random.random((1000, 100)))
+    assert_raises_regex(ValueError, "The number of spectra in wavelength",
+                        Spectrum, np.array([np.random.random(100),
+                                            np.random.random(10)]),
+                        np.array([np.random.random(100),
+                                  np.random.random(10),
+                                  np.random.random(5)]))
+    assert_raises_regex(ValueError, "The number of wavelength",
+                        Spectrum, np.array([np.random.random(100),
+                                            np.random.random(5)]),
+                        np.array([np.random.random(100),
+                                  np.random.random(10)]))
 
 
 def test_spectrum():
@@ -48,6 +62,48 @@ def test_spectrum():
                     rtol=RELATIVE_TOLERANCE)
     assert_allclose(spec.wavelength, wavelength_expected,
                     rtol=RELATIVE_TOLERANCE)
+    assert spec.meta == {'kind': 'random'}
+
+    spec = Spectrum(rng.random_sample((1, 10)), rng.random_sample((1, 10)),
+                    {'kind': 'random'})
+
+    spectrum_expected = np.array([[0.97861834, 0.79915856, 0.46147936,
+                                   0.78052918, 0.11827443, 0.63992102,
+                                   0.14335329, 0.94466892, 0.52184832,
+                                   0.41466194]])
+    wavelength_expected = np.array([[0.26455561, 0.77423369, 0.45615033,
+                                     0.56843395, 0.0187898, 0.6176355,
+                                     0.61209572, 0.616934, 0.94374808,
+                                     0.6818203]])
+
+    assert_allclose(spec.spectrum, spectrum_expected,
+                    rtol=RELATIVE_TOLERANCE)
+    assert_allclose(spec.wavelength, wavelength_expected,
+                    rtol=RELATIVE_TOLERANCE)
+    assert spec.meta == {'kind': 'random'}
+
+    spec = Spectrum(np.array([rng.random_sample((2,)),
+                              rng.random_sample((3,))]),
+                    np.array([rng.random_sample((2,)),
+                              rng.random_sample((3,))]),
+                    {'kind': 'random'})\
+
+    wavelength_expected = np.array([
+        np.array([0.67063787, 0.21038256]),
+        np.array([0.1289263, 0.31542835, 0.36371077])])
+
+    spectrum_expected = np.array([
+        np.array([0.3595079, 0.43703195]),
+        np.array([0.6976312, 0.06022547, 0.66676672])])
+
+    for wave, wave_exp, spectra, spectra_exp in zip(spec.wavelength,
+                                                    wavelength_expected,
+                                                    spec.spectrum,
+                                                    spectrum_expected):
+        assert_allclose(spectra, spectra_exp,
+                        rtol=RELATIVE_TOLERANCE)
+        assert_allclose(wave, wave_exp,
+                        rtol=RELATIVE_TOLERANCE)
     assert spec.meta == {'kind': 'random'}
 
 

@@ -53,6 +53,15 @@ elif [[ "$DISTRIB" == "ubuntu" ]]; then
 
 fi
 
+# install spc dependency from master
+cd
+mkdir -p download
+cd download
+git clone https://github.com/rohanisaac/spc.git
+cd spc
+pip install .
+
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"
+cd $TRAVIS_BUILD_DIR
 python setup.py develop

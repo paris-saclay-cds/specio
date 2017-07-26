@@ -62,7 +62,7 @@ def help(name=None):
 # Base functions that return a reader
 
 
-def get_reader(uri, format=None, mode='?', **kwargs):
+def get_reader(uri, format=None, **kwargs):
     """Return a Reader instance.
 
     Returns a :class:`.Reader` object which can be used to read data
@@ -77,11 +77,6 @@ def get_reader(uri, format=None, mode='?', **kwargs):
         The format to use to read the file. By default specio selects
         the appropriate for you based on the filename and its contents.
 
-    mode : {'s', 'S', '?'}
-        Used to give the reader a hint on what the user expects (default "?"):
-        "s" for a single spectra, "S" for multiple spectrum or
-        "?" for don't care.
-
     kwargs : dict
         Further keyword arguments are passed to the reader. See :func:`.help`
         to see what arguments are available for a particular format.
@@ -94,7 +89,7 @@ def get_reader(uri, format=None, mode='?', **kwargs):
     """
 
     # Create request object
-    request = Request(uri, mode, **kwargs)
+    request = Request(uri, **kwargs)
 
     # Get format
     if format is not None:
@@ -102,8 +97,7 @@ def get_reader(uri, format=None, mode='?', **kwargs):
     else:
         format = formats.search_read_format(request)
     if format is None:
-        raise ValueError('Could not find a format to read the specified file '
-                         'in mode %r' % mode)
+        raise ValueError('Could not find a format to read the specified file')
 
     # Return its reader object
     return format.get_reader(request)
@@ -120,8 +114,8 @@ def specread(uri, format=None, **kwargs):
     Parameters
     ----------
     uri : {str, file}
-        The resource to load the spectrum from, e.g. a filename, http address or
-        file object, see the docs for more info.
+        The resource to load the spectrum from, e.g. a filename or file object,
+        see the docs for more info.
 
     format : str
         The format to use to read the file. By default specio selects
@@ -140,9 +134,9 @@ def specread(uri, format=None, **kwargs):
     """
 
     # Get reader and read first
-    reader = read(uri, format, 's', **kwargs)
+    reader = read(uri, format, **kwargs)
     with reader:
-        return reader.get_data(0)
+        return reader.get_data(index=None)
 
 # Aliases
 

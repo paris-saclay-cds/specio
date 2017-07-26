@@ -34,7 +34,7 @@ class DummyFormat(Format):
         # for a format to read a certain image. Return True if this format
         # can do it.
         #
-        # The format manager is aware of the extensions and the modes
+        # The format manager is aware of the extensions
         # that each format can handle. It will first ask all formats
         # that *seem* to be able to read it whether they can. If none
         # can, it will ask the remaining formats if they can: the
@@ -50,9 +50,8 @@ class DummyFormat(Format):
         # request.filename: a representation of the source (only for reporting)
         # request.firstbytes: the first 256 bytes of the file.
 
-        if request.mode in (self.modes + '?'):
-            if request.filename.lower().endswith(self.extensions):
-                return True
+        if request.filename.lower().endswith(self.extensions):
+            return True
         return False
     # -- reader
 
@@ -79,9 +78,9 @@ class DummyFormat(Format):
             # Return the number of images. Can be np.inf
             return self._length
 
-        def _get_data(self, index):
+        def _get_data(self, index=None):
             # Return the data and meta data for the given index
-            if index >= self._length:
+            if index is not None and index >= self._length:
                 raise IndexError('Image index %i > %i' % (index, self._length))
             # Read all bytes
             if self._data is None:
@@ -102,6 +101,5 @@ class DummyFormat(Format):
 format = DummyFormat('dummy',  # short name
                      'An example format that does nothing.',  # one line descr.
                      '.foobar .nonexistentext',  # list of extensions
-                     'sS'  # modes, characters in sS
                      )
 formats.add_format(format)

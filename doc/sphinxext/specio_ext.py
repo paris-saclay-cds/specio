@@ -55,7 +55,7 @@ def prepare_reader_and_witer():
     # to be new classes, otherwise sphinx considers them aliases.
     # We create the class using type() so that we can copy the __doc__.
     Reader = type('Reader', (specio.core.format.Format.Reader, ),
-                  {'__doc__': specio.core.format.Format.Reader.__doc__ })
+                  {'__doc__': specio.core.format.Format.Reader.__doc__})
 
     specio.core.format.Reader = Reader
 
@@ -125,6 +125,7 @@ def create_plugin_docs():
     # Write
     _write('plugins.rst', text)
 
+
 format_doc_text = """
 This page lists all formats currently supported by specio. Each format can
 support extra keyword arguments for reading and writing, which can be specified
@@ -147,27 +148,18 @@ def create_format_docs():
 
     # Get bullet list of all formats
     ss = ['\n']
-    covered_formats = []
-    modemap = {'s': 'Single spectrum', 'S': 'Multiple spectra'}
-    for mode in 'sS':
-        subtitle = modemap.get(mode, 'Unsorted')
-        subs = []
-        for format in specio.formats:
-            if ((mode in format.modes) or
-                    (mode == '-' and format not in covered_formats)):
-                covered_formats.append(format)
-                s = '  * :ref:`%s <%s>` - %s' % (format.name,
-                                                 format.name,
-                                                 format.description)
-                subs.append(s)
-        if subs:
-            ss.append('%s\n%s\n' % (subtitle, '^' * len(subtitle)))
-            ss.extend(subs)
-            ss.append('')
+    subs = []
+    for format in specio.formats:
+        s = '  * :ref:`%s <%s>` - %s' % (format.name,
+                                         format.name,
+                                         format.description)
+        subs.append(s)
+    if subs:
+        ss.extend(subs)
+        ss.append('')
 
     text += '\n'.join(ss) + '\n\n'
     _write('formats.rst', text)
-
 
     # Get more docs for each format
     for format in specio.formats:
@@ -186,7 +178,7 @@ def create_format_docs():
         #
         text += docs + '\n\n'
 
-        #members = '\n  :members:\n\n'
-        #text += '.. autoclass:: %s.Reader%s' % (format.__module__, members)
-        #text += '.. autoclass:: %s.Writer%s' % (format.__module__, members)
+        # members = '\n  :members:\n\n'
+        # text += '.. autoclass:: %s.Reader%s' % (format.__module__, members)
+        # text += '.. autoclass:: %s.Writer%s' % (format.__module__, members)
         _write('format_%s.rst' % format.name.lower(), text)

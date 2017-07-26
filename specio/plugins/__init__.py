@@ -64,3 +64,4 @@ For the Format.Reader class:
 """
 
 from . import example
+from . import spc
