@@ -215,8 +215,8 @@ class SPC(Format):
         def _close(self):
             # Close the reader.
             # Note that the request object will close self._fp
-            self._fp = None
             self._data = None
+            self._length = None
 
         def _get_length(self):
             # Give the number of spectra
