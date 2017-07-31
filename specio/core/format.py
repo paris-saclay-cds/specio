@@ -388,14 +388,30 @@ class Format(object):
             """
             raise NotImplementedError()
 
-        def _get_data(self, index):
-            """Plugins must implement this, but may raise an IndexError in
+        def _get_data(self, index=None):
+            """Plugins can overwrite this, but may raise an IndexError in
             case the plugin does not support random access.
 
             It should return the spectra and meta data: (ndarray, dict).
 
             """
-            raise NotImplementedError()
+            if index is None:
+                return (self._data.spectrum,
+                        self._data.wavelength,
+                        self._data.meta)
+            if len(self._data.spectrum.shape) == 2:
+                if len(self._data.wavelength.shape) == 1:
+                    return (self._data.spectrum[index, :],
+                            self._data.wavelength,
+                            self._data.meta)
+                else:
+                    return (self._data.spectrum[index, :],
+                            self._data.wavelength[index, :],
+                            self._data.meta)
+            else:
+                return (self._data.spectrum[index],
+                        self._data.wavelength[index],
+                        self._data.meta)
 
         def _get_meta_data(self, index):
             """Plugins must implement this.

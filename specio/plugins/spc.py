@@ -222,25 +222,6 @@ class SPC(Format):
             # Give the number of spectra
             return self._length
 
-        def _get_data(self, index=None):
-            if index is None:
-                return (self._data.spectrum,
-                        self._data.wavelength,
-                        self._data.meta)
-            if len(self._data.spectrum.shape) == 2:
-                if len(self._data.wavelength.shape) == 1:
-                    return (self._data.spectrum[index, :],
-                            self._data.wavelength,
-                            self._data.meta)
-                else:
-                    return (self._data.spectrum[index, :],
-                            self._data.wavelength[index, :],
-                            self._data.meta)
-            else:
-                return (self._data.spectrum[index],
-                        self._data.wavelength[index],
-                        self._data.meta)
-
         def _get_meta_data(self, index):
             return self._data.meta
 
