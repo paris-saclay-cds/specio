@@ -11,13 +11,12 @@ import warnings
 
 import numpy as np
 
-import spc
-
 from .. import formats
 from ..core import Format
 from ..core.exceptions import VersionError
 from ..core.request import read_n_bytes
 from ..core.util import Spectrum
+
 
 VERSION_SUPPORTED = (b'\x4b', b'\x4d', b'\xcf')
 
@@ -207,6 +206,7 @@ class SPC(Format):
             return Spectrum(spectrum, wavelength, meta)
 
         def _open(self):
+            import spc
             # Open the reader
             self._fp = self.request.get_local_filename()
             self._data = self._spc_to_numpy(spc.File(self._fp))
