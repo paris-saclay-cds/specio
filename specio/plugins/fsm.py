@@ -12,7 +12,6 @@ from .. import formats
 from ..core import Format
 from ..core.util import Spectrum
 
-import binascii
 import struct
 
 
@@ -169,8 +168,7 @@ def _decode_5105(data):
         The list of the value decoded.
 
     """
-    data_format = '<' + 'f' * (len(data) // 4)
-    return list(struct.unpack(data_format, data))
+    return np.frombuffer(data, dtype=np.float32)
 
 
 FUNC_DECODE = {5100: _decode_5100,
@@ -190,20 +188,20 @@ class FSM(Format):
     >>> spectra = specread(load_fsm_path())
     >>> spectra.wavelength
     array([ 4000.,  3998.,  3996., ...,   724.,   722.,   720.])
-    >>> spectra.spectrum # doctest: +ELLIPSIS
+    >>> spectra.spectrum # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
     array([[  38.65655136,   38.6666069 ,   38.64698792, ...,   39.89584732,
               29.76511383,   28.13317108],
            [  44.61751175,   44.51957703,   44.59909439, ...,   27.84810638,
               48.12566376,   44.58335876],
            [  45.4976387 ,   45.44074631,   45.43001556, ...,  104.77108002,
               83.30805206,   55.3244133 ],
-           ...
+           ...,
            [  81.6805954 ,   81.66387177,   81.57576752, ...,  114.77721405,
              125.94933319,  121.3031311 ],
            [  85.60238647,   85.57183075,   85.57678986, ...,  118.79945374,
              154.56201172,  135.4960022 ],
            [  87.86193085,   87.94794464,   88.03714752, ...,   59.7109108 ,
-              76.84341431,  122.54582214]])
+              76.84341431,  122.54582214]], dtype=float32)
 
     """
 
