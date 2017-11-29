@@ -4,6 +4,8 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
+import pytest
+
 from specio import formats
 from specio.core import Request
 from specio.datasets import load_fsm_path
@@ -24,3 +26,4 @@ def test_fsm_format():
     spec = reader.get_data(0)
     assert spec.spectrum.shape == (1641,)
     assert spec.wavelength.shape == (1641,)
+    assert spec.spectrum[0] == pytest.approx(38.656551)
