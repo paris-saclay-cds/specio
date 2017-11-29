@@ -188,7 +188,7 @@ class FSM(Format):
     >>> spectra = specread(load_fsm_path())
     >>> spectra.wavelength
     array([ 4000.,  3998.,  3996., ...,   724.,   722.,   720.])
-    >>> spectra.spectrum # doctest: +ELLIPSIS
+    >>> spectra.spectrum # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
     array([[  38.65655136,   38.6666069 ,   38.64698792, ...,   39.89584732,
               29.76511383,   28.13317108],
            [  44.61751175,   44.51957703,   44.59909439, ...,   27.84810638,
