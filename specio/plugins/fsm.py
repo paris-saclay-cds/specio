@@ -12,7 +12,6 @@ from .. import formats
 from ..core import Format
 from ..core.util import Spectrum
 
-import binascii
 import struct
 
 
@@ -169,8 +168,7 @@ def _decode_5105(data):
         The list of the value decoded.
 
     """
-    data_format = '<' + 'f' * (len(data) // 4)
-    return list(struct.unpack(data_format, data))
+    return np.frombuffer(data, dtype=np.float32)
 
 
 FUNC_DECODE = {5100: _decode_5100,
