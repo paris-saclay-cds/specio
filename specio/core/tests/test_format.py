@@ -17,6 +17,7 @@ from pytest import raises
 
 from specio import formats
 from specio.core import Format, Request, FormatManager
+from specio.core import Spectrum
 from specio.plugins.example import DummyFormat
 
 DATA_PATH = module_path = dirname(__file__)
@@ -48,9 +49,9 @@ class MyFormat(Format):
                 return 'not an array', {}
             else:
                 self._read_frames += 1
-                return (np.ones((10, 10)) * index,
-                        np.ones((10,)) * index,
-                        self._get_meta_data(index))
+                return Spectrum(np.ones((10, 10)) * index,
+                                np.ones((10,)) * index,
+                                self._get_meta_data(index))
 
         def _get_meta_data(self, index):
             if self._failmode:
@@ -137,8 +138,6 @@ def test_reader():
     assert R.get_next_data().spectrum[0, 0] == 2
     # Fail
     R._failmode = 1
-    with pytest.raises(ValueError, message="unpack"):
-        R.get_data(0)
     with pytest.raises(ValueError, message="Meta data be a dict"):
         R.get_meta_data(0)
 

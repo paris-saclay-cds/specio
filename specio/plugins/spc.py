@@ -105,15 +105,14 @@ class SPC(Format):
                 The converted data.
 
             """
+            meta = self._meta_data_from_spc(spc_file)
             if spc_file.dat_fmt in ('gx-y', 'x-y'):
                 spectrum = np.array([f.y for f in spc_file.sub])
                 wavelength = spc_file.x
-                meta = self._meta_data_from_spc(spc_file)
                 return Spectrum(spectrum, wavelength, meta)
 
             elif spc_file.dat_fmt == '-xy':
-                meta = self._meta_data_from_spc(spc_file)
-                return [Spectrum(f.y, f.x, meta) for f in spc_file]
+                return [Spectrum(f.y, f.x, meta) for f in spc_file.sub]
 
             else:
                 raise ValueError('Unknown file structure.')
@@ -123,7 +122,7 @@ class SPC(Format):
             # Open the reader
             self._fp = self.request.get_local_filename()
             self._data = self._spc_to_numpy(spc.File(self._fp))
-            self._length = self._data.spectrum.shape[0]
+            self._length = len(self._data)
 
         def _close(self):
             # Close the reader.

@@ -10,6 +10,7 @@ import numpy as np
 
 from .. import formats
 from ..core import Format
+from ..core import Spectrum
 
 
 class DummyFormat(Format):
@@ -89,7 +90,7 @@ class DummyFormat(Format):
             spec = np.frombuffer(self._data, 'uint8')
             spec = spec[np.newaxis, :]
             # Return array and dummy meta data
-            return spec, np.squeeze(spec), {}
+            return Spectrum(spec, np.squeeze(spec), {})
 
         def _get_meta_data(self, index):
             # Get the meta data for the given index. If index is None, it

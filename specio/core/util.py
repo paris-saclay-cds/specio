@@ -94,6 +94,12 @@ class Spectrum(object):
             spectrum, wavelength)
         self.meta = meta if meta is not None else {}
 
+    def __len__(self):
+        if self.spectrum.ndim == 1:
+            return 1
+        else:
+            return self.spectrum.shape[0]
+
     def __repr__(self):
         msg = ("Spectrum: \n"
                "wavelength:\n {} \n"

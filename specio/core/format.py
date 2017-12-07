@@ -223,8 +223,7 @@ class Format(object):
             """
             self._checkClosed()
             self._BaseReader_last_index = index
-            spectrum, wavelength, meta = self._get_data(index, **kwargs)
-            return Spectrum(spectrum, wavelength, meta)
+            return self._get_data(index, **kwargs)
 
         def get_next_data(self, **kwargs):
             """Read the next spectra from the series.
@@ -294,14 +293,14 @@ class Format(object):
             i, n = 0, self.get_length()
             while i < n:
                 try:
-                    spectrum, wavelength, meta = self._get_data(i)
+                    spectra = self._get_data(i)
                 except (IndexError, CannotReadSpectraError):
                     if n - i == 1:
                         uri = self.request.filename
                         warn('Could not read last frame of %s.' % uri)
                         return
                     raise
-                yield Spectrum(spectrum, wavelength, meta)
+                yield spectra
                 i += 1
 
         # Compatibility
@@ -395,23 +394,19 @@ class Format(object):
             It should return the spectra and meta data: (ndarray, dict).
 
             """
-            if index is None:
-                return (self._data.spectrum,
-                        self._data.wavelength,
-                        self._data.meta)
-            if len(self._data.spectrum.shape) == 2:
-                if len(self._data.wavelength.shape) == 1:
-                    return (self._data.spectrum[index, :],
-                            self._data.wavelength,
-                            self._data.meta)
+            if isinstance(self._data, Spectrum):
+                if index is not None and self._data.spectrum.ndim == 2:
+                    return Spectrum(self._data.spectrum[index],
+                                    self._data.wavelength,
+                                    self._data.meta)
                 else:
-                    return (self._data.spectrum[index, :],
-                            self._data.wavelength[index, :],
-                            self._data.meta)
-            else:
-                return (self._data.spectrum[index],
-                        self._data.wavelength[index],
-                        self._data.meta)
+                    return self._data
+
+            else:  # list of Spectrum
+                if index is None:
+                    return self._data
+                else:
+                    return self._data[index]
 
         def _get_meta_data(self, index):
             """Plugins must implement this.
