@@ -4,6 +4,8 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
+import pytest
+
 import gc
 import shutil
 from tempfile import mkdtemp
@@ -16,7 +18,6 @@ from pytest import raises
 from specio import formats
 from specio.core import Format, Request, FormatManager
 from specio.plugins.example import DummyFormat
-from specio.testing import assert_raises_regex
 
 DATA_PATH = module_path = dirname(__file__)
 
@@ -73,8 +74,9 @@ def test_format():
     for F in (F1, F2, F3, F4):
         assert set(F.extensions) == set(['.foo', '.bar', '.spam'])
     # Fail
-    assert_raises_regex(ValueError, "Invalid value for extensions given.",
-                        Format, 'test', '', 3)
+    with pytest.raises(ValueError,
+                       message="Invalid value for extensions given."):
+        Format('test', '', 3)
 
 
 def test_format_subclass():
@@ -98,10 +100,10 @@ def test_format_context_manager():
         pass
     # Objects are now closed, cannot be used
     assert R.closed
-    assert_raises_regex(RuntimeError, "I/O operation on closed Reader.",
-                        R.__enter__)
-    assert_raises_regex(RuntimeError, "I/O operation on closed Reader.",
-                        R.get_data, 0)
+    with pytest.raises(RuntimeError,
+                       message="I/O operation on closed Reader."):
+        R.__enter__()
+        R.get_data(0)
 
     R = F.get_reader(Request(filename))
     ids = id(R)
@@ -133,10 +135,11 @@ def test_reader():
     assert R.get_next_data().spectrum[0, 0] == 2
     # Fail
     R._failmode = 1
-    assert_raises_regex(ValueError, "unpack",
-                        R.get_data, 0)
-    assert_raises_regex(ValueError, "Meta data must be a dict,",
-                        R.get_meta_data, 0)
+    with pytest.raises(ValueError, message="unpack"):
+        R.get_data(0)
+    with pytest.raises(ValueError, message="Meta data be a dict"):
+        R.get_meta_data(0)
+
     R._failmode = 2
     with raises(IndexError):
         [spec for spec in R]
@@ -191,44 +194,46 @@ def test_format_manager():
     F1 = formats['FOOBAR']
     F2 = formats['.foobar']
     assert F1 is F2
-    assert_raises_regex(ValueError, "Looking up a format should be done by",
-                        formats.__getitem__, 678)
-    assert_raises_regex(IndexError,
-                        "No format known by name .nonexistentformat",
-                        formats.__getitem__, '.nonexistentformat')
+    with pytest.raises(ValueError,
+                       message="Looking up a format should be done by"):
+        formats.__getitem__(678)
+    with pytest.raises(IndexError,
+                       message="No format known by name .nonexistentformat"):
+        formats.__getitem__('.nonexistentformat')
 
     myformat = Format('test', 'test description', 'testext1 testext2')
     formats.add_format(myformat)
     assert myformat in [f for f in formats]
     assert formats['testext1'] is myformat
     assert formats['testext2'] is myformat
-    assert_raises_regex(ValueError,
-                        "add_format needs argument to be a Format object",
-                        formats.add_format, 678)
-    assert_raises_regex(ValueError,
-                        "Given Format instance is already registered",
-                        formats.add_format, myformat)
+    with pytest.raises(ValueError,
+                       message="add_format needs argument to be a Format"):
+        formats.add_format(678)
+    with pytest.raises(ValueError,
+                       message="Given Format instance is already registered"):
+        formats.add_format(myformat)
 
     myformat2 = Format('test', 'other description', 'foobar')
-    assert_raises_regex(ValueError,
-                        "A Format named 'TEST' is already registered",
-                        formats.add_format, myformat2)
+    with pytest.raises(ValueError,
+                       message="A Format named 'TEST' is already registered"):
+        formats.add_format(myformat2)
     formats.add_format(myformat2, True)  # overwrite
     assert formats['test'] is not myformat
     assert formats['test'] is myformat2
 
-    assert_raises_regex(ValueError, "No format matches the empty string",
-                        formats.__getitem__, '')
+    with pytest.raises(ValueError,
+                       message="No format matches the empty string"):
+        formats.__getitem__('')
 
     formats.show()
 
 
-def test_sorting_errors():
-    assert_raises_regex(TypeError, "accepts only string names.",
-                        formats.sort, 3)
-    assert_raises_regex(ValueError,
-                        "should not contain dots or commas.",
-                        formats.sort, 'foo, bar')
-    assert_raises_regex(ValueError,
-                        "should not contain dots or commas.",
-                        formats.sort, 'foo.png')
+@pytest.mark.parametrize("type_error,msg,params",
+                         [(TypeError, "accepts only string name", 3),
+                          (ValueError, "should not contain dots or commas.",
+                           'foo, bar'),
+                          (ValueError, "should not contain dots or commas.",
+                           'foo.png')])
+def test_sorting_errors(type_error, msg, params):
+    with pytest.raises(type_error, message=msg):
+        formats.sort(params)
