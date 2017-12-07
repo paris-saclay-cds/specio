@@ -87,7 +87,7 @@ class SPC(Format):
             """
             meta = {key: val
                     for key, val in spc_file.__dict__.items()
-                    if key not in IGNORED_ATTRIBUTES}
+                    if key not in IGNORED_ATTRIBUTES or key.startswith('_')}
 
             return meta
 
