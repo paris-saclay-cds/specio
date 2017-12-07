@@ -21,6 +21,9 @@ from specio.core.util import Spectrum, Dict
                            "1-D or 2-D"),
                           (np.random.random((100, 1000)),
                            np.random.random((100,)),
+                           "The number of frequencies"),
+                          (np.random.random((10,)),
+                           np.random.random((100,)),
                            "The number of frequencies")])
 def test_spectrum_error(spectrum, wavelength, msg):
     with pytest.raises(ValueError, message=msg):
@@ -66,4 +69,5 @@ def test_util_dict():
     # Fail
     with pytest.raises(AttributeError):
         D.__setattr__('copy', False)
+    with pytest.raises(AttributeError):
         D.__getattribute__('notinD')

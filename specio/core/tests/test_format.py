@@ -103,6 +103,8 @@ def test_format_context_manager():
     with pytest.raises(RuntimeError,
                        message="I/O operation on closed Reader."):
         R.__enter__()
+    with pytest.raises(RuntimeError,
+                       message="I/O operation on closed Reader."):
         R.get_data(0)
 
     R = F.get_reader(Request(filename))
