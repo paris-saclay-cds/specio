@@ -53,7 +53,7 @@ install:
 build: false
 
 test_script:
-  - powershell ./build_tools/appveyor/test.ps
+  - powershell ./build_tools/appveyor/test.ps1
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
