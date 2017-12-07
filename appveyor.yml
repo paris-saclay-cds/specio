@@ -1,3 +1,5 @@
+build: false
+
 environment:
   # There is no need to run the build for all the Python version /
   # architectures combo as the generated nilearn wheel is the same on all
