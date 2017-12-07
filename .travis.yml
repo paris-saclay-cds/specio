@@ -10,15 +10,10 @@ cache:
 
 matrix:
   include:
-    - env: DISTRIB="conda" PYTHON_VERSION="2.7"
-    - env: DISTRIB="conda" PYTHON_VERSION="3.4"
-    - env: DISTRIB="conda" PYTHON_VERSION="3.5"
-    - env: DISTRIB="conda" PYTHON_VERSION="3.6"
-    - env: DISTRIB="ubuntu"
-      addons:
-        apt:
-          packages:
-            - python-numpy
+    - env: PYTHON_VERSION="2.7"
+    - env: PYTHON_VERSION="3.4"
+    - env: PYTHON_VERSION="3.5"
+    - env: PYTHON_VERSION="3.6"
 
 install: source build_tools/travis/install.sh
 

@@ -26,35 +26,11 @@ install:
   # Add Library/bin directory to fix issue
   # https://github.com/conda/conda/issues/1753
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PYTHON%\\Library\\bin;%PATH%"
-
-  # Check that we have the expected version and architecture for Python
-  - "python --version"
-  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
-
-  # Installed prebuilt dependencies from conda
-  - "conda install pip numpy six nose wheel -y -q"
-  - "pip install nose-timer nose-exclude pytest"
-
-  # Installed spc package from github
-  - "cd C:\\"
-  - "git clone https://github.com/rohanisaac/spc.git"
-  - "cd spc"
-  - "python setup.py install"
-  - "cd %APPVEYOR_BUILD_FOLDER%"
-
-  # Install other specio dependencies
-  - "python setup.py bdist_wheel"
-  - ps: "ls dist"
-
-  # Install the generated wheel package to test it
-  - "pip install --pre --no-index --find-links dist/ specio"
-
-# Not a .NET project, we build in the install step instead
-build: false
+  - conda install pip numpy six nose wheel pytest -y -q
+  - pip install git+https://github.com/rohanisaac/spc.git
+  - pip install .
 
 test_script:
-  - powershell ./build_tools/appveyor/test.ps1
-
-artifacts:
-  # Archive the generated packages in the ci.appveyor.com build report.
-  - path: dist\*
+  - mkdir for_test
+  - cd for_test
+  - py.test --pyargs specio --cov-report term-missing --cov=specio
