@@ -62,13 +62,12 @@ def test_request():
     assert R.kwargs == {'some_kwarg': 'something'}
 
 
-@pytest.mark.parametrize('type_error,msg,params',
-                         [(IOError, "Cannot understand given URI",
-                           ['invalid', 'uri'] * 10),
-                          (IOError, "Cannot understand given URI", 4),
-                          (IOError, "No such file", '/does/not/exist'),
-                          (IOError, "No such file",
-                           '/does/not/exist.zip/spam.png')])
+@pytest.mark.parametrize(
+    'type_error,msg,params',
+    [(IOError, "Cannot understand given URI", ['invalid', 'uri'] * 10),
+     (IOError, "Cannot understand given URI", 4),
+     (IOError, "No such file", '/does/not/exist'),
+     (IOError, "No such file", '/does/not/exist.zip/spam.png')])
 def test_request_error(type_error, msg, params):
     with pytest.raises(type_error, message=msg):
         Request(params)

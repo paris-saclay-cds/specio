@@ -12,29 +12,21 @@ from numpy.testing import assert_allclose
 from specio.core.util import Spectrum, Dict
 
 
-@pytest.mark.parametrize("spectrum,wavelength,msg",
-                         [(np.random.random((100, 100, 100)),
-                           np.random.random((10,)),
-                           "1-D or 2-D"),
-                          (np.random.random((100, 100)),
-                           np.random.random((100, 100)),
-                           "1-D or 2-D"),
-                          (np.random.random((100, 1000)),
-                           np.random.random((100,)),
-                           "The number of frequencies"),
-                          (np.random.random((10,)),
-                           np.random.random((100,)),
-                           "The number of frequencies")])
+@pytest.mark.parametrize(
+    "spectrum,wavelength,msg",
+    [(np.ones((100, 100, 100)), np.ones((10,)), "1-D or 2-D"),
+     (np.ones((100, 100)), np.ones((100, 100)), "1-D or 2-D"),
+     (np.ones((100, 1000)), np.ones((100,)), "The number of frequencies"),
+     (np.ones((10,)), np.ones((100,)), "The number of frequencies")])
 def test_spectrum_error(spectrum, wavelength, msg):
     with pytest.raises(ValueError, message=msg):
         Spectrum(spectrum, wavelength)
 
 
-@pytest.mark.parametrize("spectrum,wavelength,metadata",
-                         [(np.ones((1, 10)), np.ones((10,)),
-                           {'kind': 'random'}),
-                          (np.ones((10,)), np.ones((10,)),
-                           {'kind': 'random'})])
+@pytest.mark.parametrize(
+    "spectrum,wavelength,metadata",
+    [(np.ones((1, 10)), np.ones((10,)), {'kind': 'random'}),
+     (np.ones((10,)), np.ones((10,)), {'kind': 'random'})])
 def test_spectrum(spectrum, wavelength, metadata):
     spec = Spectrum(spectrum, wavelength, metadata)
     assert_allclose(spec.spectrum, spectrum)

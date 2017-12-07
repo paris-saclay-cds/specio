@@ -29,14 +29,13 @@ def test_read():
     assert R1.format == R2.format
 
 
-@pytest.mark.parametrize("type_error,msg, filename,file_format",
-                         [(ValueError, "Could not find a format",
-                           join(DATA_PATH, 'data', 'spectra.notavalidext'),
-                           None),
-                          (IOError, "No such file", "notexisting.barf", None),
-                          (IndexError, "No format known by name",
-                           join(DATA_PATH, 'data', 'spectra.foobar'),
-                           'notexistingformat')])
+@pytest.mark.parametrize(
+    "type_error,msg, filename,file_format",
+    [(ValueError, "Could not find a format",
+      join(DATA_PATH, 'data', 'spectra.notavalidext'), None),
+     (IOError, "No such file", "notexisting.barf", None),
+     (IndexError, "No format known by name",
+      join(DATA_PATH, 'data', 'spectra.foobar'), 'notexistingformat')])
 def test_read_error(type_error, msg, filename, file_format):
     with pytest.raises(type_error, message=msg):
         read(filename, format=file_format)

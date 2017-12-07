@@ -28,7 +28,7 @@ install:
   # Add Library/bin directory to fix issue
   # https://github.com/conda/conda/issues/1753
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PYTHON%\\Library\\bin;%PATH%"
-  - conda install pip numpy six nose wheel pytest -y -q
+  - conda install pip numpy six nose wheel pytest pytest-cov -y -q
   - pip install git+https://github.com/rohanisaac/spc.git
   - pip install .
 

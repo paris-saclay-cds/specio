@@ -230,12 +230,11 @@ def test_format_manager():
     formats.show()
 
 
-@pytest.mark.parametrize("type_error,msg,params",
-                         [(TypeError, "accepts only string name", 3),
-                          (ValueError, "should not contain dots or commas.",
-                           'foo, bar'),
-                          (ValueError, "should not contain dots or commas.",
-                           'foo.png')])
+@pytest.mark.parametrize(
+    "type_error,msg,params",
+    [(TypeError, "accepts only string name", 3),
+     (ValueError, "should not contain dots or commas.", 'foo, bar'),
+     (ValueError, "should not contain dots or commas.", 'foo.png')])
 def test_sorting_errors(type_error, msg, params):
     with pytest.raises(type_error, message=msg):
         formats.sort(params)
