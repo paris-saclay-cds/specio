@@ -391,7 +391,8 @@ class Format(object):
             """Plugins can overwrite this, but may raise an IndexError in
             case the plugin does not support random access.
 
-            It should return the spectra and meta data: (ndarray, dict).
+            It should return a Spectrum instance or a list of Spectrum
+            instances.
 
             """
             if isinstance(self._data, Spectrum):

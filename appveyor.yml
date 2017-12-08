@@ -28,11 +28,11 @@ install:
   # Add Library/bin directory to fix issue
   # https://github.com/conda/conda/issues/1753
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PYTHON%\\Library\\bin;%PATH%"
-  - conda install pip numpy six nose wheel pytest pytest-cov -y -q
+  - conda install pip numpy six pytest pytest-cov -y -q
   - pip install git+https://github.com/rohanisaac/spc.git
   - pip install .
 
 test_script:
   - mkdir for_test
   - cd for_test
-  - py.test --pyargs specio --cov-report term-missing --cov=specio
+  - pytest --pyargs specio --cov-report term-missing --cov=specio
