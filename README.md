@@ -1,9 +1,9 @@
 # specio: Python input/output for spectroscopic files
 
-[![Build Status](https://travis-ci.org/glemaitre/specio.svg?branch=master)](https://travis-ci.org/glemaitre/specio)
-[![Build status](https://ci.appveyor.com/api/projects/status/jc4fixtbvwdgpc9v?svg=true)](https://ci.appveyor.com/project/glemaitre/specio)
-[![CircleCI](https://circleci.com/gh/glemaitre/specio.svg?style=shield)](https://circleci.com/gh/glemaitre/specio)
-[![codecov](https://codecov.io/gh/glemaitre/specio/branch/master/graph/badge.svg)](https://codecov.io/gh/glemaitre/specio)
+[![Build Status](https://travis-ci.org/paris-saclay-cds/specio.svg?branch=master)](https://travis-ci.org/paris-saclay-cds/specio)
+[![Build status](https://ci.appveyor.com/api/projects/status/pvkh4hic8rpxcoyn?svg=true)](https://ci.appveyor.com/project/glemaitre/specio-crk9i)
+[![CircleCI](https://circleci.com/gh/paris-saclay-cds/specio.svg?style=shield)](https://circleci.com/gh/paris-saclay-cds/specio)
+[![codecov](https://codecov.io/gh/paris-saclay-cds/specio/branch/master/graph/badge.svg)](https://codecov.io/gh/paris-saclay-cds/specio)
 
 
 `specio` is a library which allows to easily open spectroscopic format

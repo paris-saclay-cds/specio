@@ -217,8 +217,8 @@ def generate_example_rst(app, what, name, obj, options, lines):
 
 # Config for sphinx_issues
 
-issues_uri = 'https://github.com/glemaitre/specio/issues/{issue}'
-issues_github_path = 'glemaitre/specio'
+issues_uri = 'https://github.com/paris-saclay-cds/specio/issues/{issue}'
+issues_github_path = 'paris-saclay-cds/specio'
 issues_user_uri = 'https://github.com/{user}'
 
 
@@ -227,6 +227,6 @@ def setup(app):
 
 # The following is used by sphinx.ext.linkcode to provide links to github
 linkcode_resolve = make_linkcode_resolve('specio',
-                                         u'https://github.com/glemaitre/'
+                                         u'https://github.com/paris-saclay-cds/'
                                          'specio/blob/{revision}/'
                                          '{package}/{path}#L{lineno}')
