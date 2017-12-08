@@ -9,7 +9,7 @@ machine:
     USERNAME: "glemaitre"
 
     # The name of the organization which host the repositories
-    ORGANIZATION: "glemaitre"
+    ORGANIZATION: "paris-saclay-cds"
 
     # The repository where the documentation will be hosted
     DOC_REPO: "specio"
