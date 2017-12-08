@@ -1,5 +1,10 @@
+import os
 from setuptools import setup, find_packages
-from specio import __version__
+
+# get __version__ from _version.py
+ver_file = os.path.join('specio', '_version.py')
+with open(ver_file) as f:
+    exec(f.read())
 
 PACKAGES = find_packages()
 
@@ -37,7 +42,18 @@ VERSION = __version__
 PACKAGE_DATA = {'specio': ['core/tests/data/*.*',
                            'plugins/tests/data/*.*',
                            'datasets/data/*.*']}
-REQUIRES = ["numpy", "six"]
+EXTRAS_REQUIRE = {
+    'tests': [
+        'pytest',
+        'pytest-cov'],
+    'docs': [
+        'sphinx',
+        'sphinx-gallery',
+        'sphinx_rtd_theme',
+        'numpydoc',
+        'matplotlib',
+    ]
+}
 
 opts = dict(name=NAME,
             maintainer=MAINTAINER,
@@ -55,7 +71,7 @@ opts = dict(name=NAME,
             packages=PACKAGES,
             package_data=PACKAGE_DATA,
             include_package_data=True,
-            install_requires=REQUIRES)
+            extras_require=EXTRAS_REQUIRE)
 
 
 if __name__ == '__main__':
