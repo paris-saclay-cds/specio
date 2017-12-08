@@ -10,9 +10,6 @@ from .core.functions import help
 from .core.functions import get_reader
 from .core.functions import specread
 
-# Load the aliases
-from .core.functions import read
-
 # Load all the plugins
 from . import plugins
 
@@ -23,7 +20,6 @@ __all__ = ['formats',
            'help',
            'get_reader',
            'specread',
-           'read',
            'plugins',
            '__version__']
 

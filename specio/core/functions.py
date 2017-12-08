@@ -134,11 +134,6 @@ def specread(uri, format=None, **kwargs):
     """
 
     # Get reader and read first
-    reader = read(uri, format, **kwargs)
+    reader = get_reader(uri, format, **kwargs)
     with reader:
         return reader.get_data(index=None)
-
-# Aliases
-
-
-read = get_reader

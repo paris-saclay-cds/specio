@@ -10,7 +10,7 @@ import pytest
 
 from numpy.testing import assert_allclose
 
-from specio import help, read, specread
+from specio import help, get_reader, specread
 
 DATA_PATH = module_path = dirname(__file__)
 RELATIVE_TOLERANCE = 1e-4
@@ -22,10 +22,10 @@ def test_help():
     help('FOOBAR')  # should print about PNG
 
 
-def test_read():
+def test_get_reader():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
-    R1 = read(filename)
-    R2 = read(filename, 'foobar')
+    R1 = get_reader(filename)
+    R2 = get_reader(filename, 'foobar')
     assert R1.format == R2.format
 
 
@@ -36,9 +36,9 @@ def test_read():
      (IOError, "No such file", "notexisting.barf", None),
      (IndexError, "No format known by name",
       join(DATA_PATH, 'data', 'spectra.foobar'), 'notexistingformat')])
-def test_read_error(type_error, msg, filename, file_format):
+def test_get_reader_error(type_error, msg, filename, file_format):
     with pytest.raises(type_error, message=msg):
-        read(filename, format=file_format)
+        get_reader(filename, format=file_format)
 
 
 def test_specread():
