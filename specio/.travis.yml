@@ -32,4 +32,4 @@ script:
 
 - mkdir for_test
 - cd for_test
-- py.test --pyargs specio --cov-report term-missing --cov=specio
+- pytest --pyargs specio --cov-report term-missing --cov=specio

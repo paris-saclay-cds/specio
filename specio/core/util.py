@@ -6,9 +6,8 @@
 
 import re
 from collections import OrderedDict
-from six import string_types
 
-import numpy as np
+from six import string_types
 
 
 class Dict(OrderedDict):
@@ -63,7 +62,7 @@ class Spectrum(object):
     spectrum : ndarray, shape (n_spectra, n_wavelength)
         The spectrum read.
 
-    wavelength : ndarray, shape (n_wavelength,) or (n_spectra, n_wavelength)
+    wavelength : ndarray, shape (n_wavelength,)
         The corresponding wavelength.
 
     meta : dict
@@ -72,39 +71,16 @@ class Spectrum(object):
 
     @staticmethod
     def _validate_spectrum_wavelength(spectrum, wavelength):
-        # x-y format / gx-y format
-        # wavelentgh : shape (n_wavelength,)
-        # spectrum : shape (n_spectra, n_wavelength)
-        if len(wavelength.shape) == 1 and len(spectrum.shape) == 2:
+        msg = ("The number of frequencies in wavelength and spectra are"
+               " not equal. Wavelength: {} - Spectrum: {}.")
+        if wavelength.ndim == 1 and spectrum.ndim == 2:
             if wavelength.shape[0] != spectrum.shape[1]:
-                raise ValueError("The number of frequencies in wavelength and"
-                                 " spectra are not equal. Wavelength: {} -"
-                                 " Spectrum: {}".format(wavelength.shape[0],
-                                                        spectrum.shape[1]))
-        # -xy format
-        # wavelength : shape (n_spectra, n_wavelength)
-        # spectrum : shape (n_spectra, n_wavelength)
-        elif len(wavelength.shape) == 2 and len(spectrum.shape) == 2:
-            if wavelength.shape != spectrum.shape:
-                raise ValueError("The dimension of wavelength and spectrum are"
-                                 " not equal. Wavelength: {} - Spectrum:"
-                                 " {}".format(wavelength.shape,
-                                              spectrum.shape))
-        # -xy format
-        # wavelength : shape (n_spectra,) of shape (n_wavelength,)
-        # spectrum : shape (n_spectra,) of shape (n_wavelength,)
-        elif len(wavelength.shape) == 1 and len(spectrum.shape) == 1:
-            if wavelength.shape != spectrum.shape:
-                raise ValueError("The number of spectra in wavelength and"
-                                 " spectra are not equal. Wavelength: {} -"
-                                 " Spectrum: {}".format(wavelength.shape,
-                                                        spectrum.shape))
-            for wave, spectra in zip(wavelength, spectrum):
-                if wave.shape != spectra.shape:
-                    raise ValueError("The number of wavelength in wavelength "
-                                     " and spectra are not equal. Wavelength: "
-                                     " {} - Spectrum: {}".format(
-                                         wave.shape, spectra.shape))
+                raise ValueError(msg.format(wavelength.shape[0],
+                                            spectrum.shape[1]))
+        elif wavelength.ndim == 1 and spectrum.ndim == 1:
+            if wavelength.size != spectrum.size:
+                raise ValueError(msg.format(wavelength.size,
+                                            spectrum.size))
         else:
             raise ValueError("The dimension of wavelength and spectrum are"
                              " incorrect. They need to be 1-D or 2-D."
@@ -114,17 +90,15 @@ class Spectrum(object):
         return spectrum, wavelength
 
     def __init__(self, spectrum, wavelength, meta=None):
-        if not isinstance(spectrum, np.ndarray):
-            raise ValueError('Spectrum expects spectrum to be a numpy array.')
-        if not isinstance(wavelength, np.ndarray):
-            raise ValueError('Spectrum expects wavelength to be a numpy'
-                             ' array.')
-        if not (meta is None or isinstance(meta, dict)):
-            raise ValueError('Spectrum expects meta data to be a dict.')
-
         self.spectrum, self.wavelength = self._validate_spectrum_wavelength(
             spectrum, wavelength)
         self.meta = meta if meta is not None else {}
+
+    def __len__(self):
+        if self.spectrum.ndim == 1:
+            return 1
+        else:
+            return self.spectrum.shape[0]
 
     def __repr__(self):
         msg = ("Spectrum: \n"

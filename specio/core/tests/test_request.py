@@ -8,11 +8,11 @@ import shutil
 import os
 from os.path import dirname, join, sep, expanduser
 
+import pytest
 from pytest import raises
 
 from specio import core
 from specio.core import Request
-from specio.testing import assert_raises_regex
 
 DATA_PATH = module_path = dirname(__file__)
 
@@ -62,14 +62,15 @@ def test_request():
     assert R.kwargs == {'some_kwarg': 'something'}
 
 
-def test_request_error():
-    assert_raises_regex(IOError, "Cannot understand given URI", Request,
-                        ['invalid', 'uri'] * 10)
-    assert_raises_regex(IOError, "Cannot understand given URI", Request, 4)
-    assert_raises_regex(IOError, "No such file", Request,
-                        '/does/not/exist')
-    assert_raises_regex(IOError, "No such file", Request,
-                        '/does/not/exist.zip/spam.png')
+@pytest.mark.parametrize(
+    'type_error,msg,params',
+    [(IOError, "Cannot understand given URI", ['invalid', 'uri'] * 10),
+     (IOError, "Cannot understand given URI", 4),
+     (IOError, "No such file", '/does/not/exist'),
+     (IOError, "No such file", '/does/not/exist.zip/spam.png')])
+def test_request_error(type_error, msg, params):
+    with pytest.raises(type_error, message=msg):
+        Request(params)
 
 
 def test_request_read_sources():

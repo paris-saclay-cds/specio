@@ -4,106 +4,33 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
+import pytest
+
 import numpy as np
 from numpy.testing import assert_allclose
 
 from specio.core.util import Spectrum, Dict
-from specio.testing import assert_raises_regex
-
-RELATIVE_TOLERANCE = 1e-4
 
 
-def test_spectrum_error():
-    assert_raises_regex(ValueError, "expects spectrum to be a numpy array",
-                        Spectrum, 0, np.zeros((100,)))
-    assert_raises_regex(ValueError, "expects wavelength to be a numpy array",
-                        Spectrum, np.random.random((100, 100)), 0)
-    assert_raises_regex(ValueError, "expects meta data to be a dict",
-                        Spectrum, np.random.random((100, 100)),
-                        np.random.random(100,), 0)
-    assert_raises_regex(ValueError, "1-D or 2-D",
-                        Spectrum, np.random.random((100, 100, 100)),
-                        np.random.random(100,))
-    assert_raises_regex(ValueError, "1-D or 2-D",
-                        Spectrum, np.random.random((100, 100)),
-                        np.random.random((100, 100, 100)))
-    assert_raises_regex(ValueError, "The number of frequencies",
-                        Spectrum, np.random.random((100, 1000)),
-                        np.random.random((100,)))
-    assert_raises_regex(ValueError, "The dimension of wavelength",
-                        Spectrum, np.random.random((100, 1000)),
-                        np.random.random((1000, 100)))
-    assert_raises_regex(ValueError, "The number of spectra in wavelength",
-                        Spectrum, np.array([np.random.random(100),
-                                            np.random.random(10)]),
-                        np.array([np.random.random(100),
-                                  np.random.random(10),
-                                  np.random.random(5)]))
-    assert_raises_regex(ValueError, "The number of wavelength",
-                        Spectrum, np.array([np.random.random(100),
-                                            np.random.random(5)]),
-                        np.array([np.random.random(100),
-                                  np.random.random(10)]))
+@pytest.mark.parametrize(
+    "spectrum,wavelength,msg",
+    [(np.ones((100, 100, 100)), np.ones((10,)), "1-D or 2-D"),
+     (np.ones((100, 100)), np.ones((100, 100)), "1-D or 2-D"),
+     (np.ones((100, 1000)), np.ones((100,)), "The number of frequencies"),
+     (np.ones((10,)), np.ones((100,)), "The number of frequencies")])
+def test_spectrum_error(spectrum, wavelength, msg):
+    with pytest.raises(ValueError, message=msg):
+        Spectrum(spectrum, wavelength)
 
 
-def test_spectrum():
-    rng = np.random.RandomState(0)
-    spec = Spectrum(rng.random_sample((1, 10)), rng.random_sample(10),
-                    {'kind': 'random'})
-
-    spectrum_expected = np.array([[0.548814, 0.715189, 0.602763, 0.544883,
-                                   0.423655, 0.645894, 0.437587, 0.891773,
-                                   0.963663,  0.383442]])
-    wavelength_expected = np.array([0.791725, 0.528895, 0.568045, 0.925597,
-                                    0.071036, 0.087129, 0.020218, 0.83262,
-                                    0.778157,  0.870012])
-
-    assert_allclose(spec.spectrum, spectrum_expected,
-                    rtol=RELATIVE_TOLERANCE)
-    assert_allclose(spec.wavelength, wavelength_expected,
-                    rtol=RELATIVE_TOLERANCE)
-    assert spec.meta == {'kind': 'random'}
-
-    spec = Spectrum(rng.random_sample((1, 10)), rng.random_sample((1, 10)),
-                    {'kind': 'random'})
-
-    spectrum_expected = np.array([[0.97861834, 0.79915856, 0.46147936,
-                                   0.78052918, 0.11827443, 0.63992102,
-                                   0.14335329, 0.94466892, 0.52184832,
-                                   0.41466194]])
-    wavelength_expected = np.array([[0.26455561, 0.77423369, 0.45615033,
-                                     0.56843395, 0.0187898, 0.6176355,
-                                     0.61209572, 0.616934, 0.94374808,
-                                     0.6818203]])
-
-    assert_allclose(spec.spectrum, spectrum_expected,
-                    rtol=RELATIVE_TOLERANCE)
-    assert_allclose(spec.wavelength, wavelength_expected,
-                    rtol=RELATIVE_TOLERANCE)
-    assert spec.meta == {'kind': 'random'}
-
-    spec = Spectrum(np.array([rng.random_sample((2,)),
-                              rng.random_sample((3,))]),
-                    np.array([rng.random_sample((2,)),
-                              rng.random_sample((3,))]),
-                    {'kind': 'random'})\
-
-    wavelength_expected = np.array([
-        np.array([0.67063787, 0.21038256]),
-        np.array([0.1289263, 0.31542835, 0.36371077])])
-
-    spectrum_expected = np.array([
-        np.array([0.3595079, 0.43703195]),
-        np.array([0.6976312, 0.06022547, 0.66676672])])
-
-    for wave, wave_exp, spectra, spectra_exp in zip(spec.wavelength,
-                                                    wavelength_expected,
-                                                    spec.spectrum,
-                                                    spectrum_expected):
-        assert_allclose(spectra, spectra_exp,
-                        rtol=RELATIVE_TOLERANCE)
-        assert_allclose(wave, wave_exp,
-                        rtol=RELATIVE_TOLERANCE)
+@pytest.mark.parametrize(
+    "spectrum,wavelength,metadata",
+    [(np.ones((1, 10)), np.ones((10,)), {'kind': 'random'}),
+     (np.ones((10,)), np.ones((10,)), {'kind': 'random'})])
+def test_spectrum(spectrum, wavelength, metadata):
+    spec = Spectrum(spectrum, wavelength, metadata)
+    assert_allclose(spec.spectrum, spectrum)
+    assert_allclose(spec.wavelength, wavelength)
     assert spec.meta == {'kind': 'random'}
 
 
@@ -132,7 +59,7 @@ def test_util_dict():
     assert 3 not in names
     assert '34a' not in names
     # Fail
-    assert_raises_regex(AttributeError, "Reserved name, this key can only"
-                        " be set via", D.__setattr__, 'copy', False)
-    assert_raises_regex(AttributeError, "'Dict' object has no attribute"
-                        " 'notinD'", D.__getattribute__, 'notinD')
+    with pytest.raises(AttributeError):
+        D.__setattr__('copy', False)
+    with pytest.raises(AttributeError):
+        D.__getattribute__('notinD')

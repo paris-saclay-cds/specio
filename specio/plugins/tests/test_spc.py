@@ -4,9 +4,17 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
+from os.path import dirname, join
+
+import pytest
+
+from specio import specread
 from specio import formats
 from specio.core import Request
 from specio.datasets import load_spc_path
+
+
+DATA_PATH = dirname(__file__)
 
 
 def test_spc_format():
@@ -24,3 +32,29 @@ def test_spc_format():
     spec = reader.get_data(0)
     assert spec.spectrum.shape == (1911,)
     assert spec.wavelength.shape == (1911,)
+
+
+@pytest.mark.parametrize(
+    "filename,spectrum_shape,wavelength_shape",
+    [(join(DATA_PATH, 'data', 'gxy.spc'), (1, 151), (151,)),
+     (join(DATA_PATH, 'data', 'x-y.spc'), (31, 1024), (1024,)),
+     (join(DATA_PATH, 'data', '-xy.spc'), [(8,), (6,)], [(8,), (6,)])])
+def test_spc_file(filename, spectrum_shape, wavelength_shape):
+    spec = specread(filename)
+    if isinstance(spec, list):
+        # in '-xy.spc', there is two different wavelength size: we are checking
+        # each of them
+        for wi in range(1):
+            assert spec[wi].spectrum.shape == spectrum_shape[wi]
+            assert spec[wi].wavelength.shape == wavelength_shape[wi]
+    else:
+        assert spec.spectrum.shape == spectrum_shape
+        assert spec.wavelength.shape == wavelength_shape
+
+
+def test_spc_xy():
+    filename = join(DATA_PATH, 'data', 'gxy.spc')
+    spec = specread(filename)
+
+    assert spec.spectrum.shape == (1, 151)
+    assert spec.wavelength.shape == (151,)
