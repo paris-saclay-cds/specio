@@ -35,7 +35,7 @@ conda install --yes numpy six pytest pytest-cov
 pip install codecov
 
 # install spc dependency from master
-pip install git+https://github.com/rohanisaac/spc.git
+pip install git+https://github.com/glemaitre/spc.git
 
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"
