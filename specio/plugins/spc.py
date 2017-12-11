@@ -42,8 +42,8 @@ class SPC(Format):
     array([  400.62109375,   402.94384766,   405.26721191, ...,  3797.08911133,
             3798.45288086,  3799.81542969])
     >>> spectra.spectrum
-    array([[ 1487.        ,  1385.        ,  1441.        , ...,
-              147.24124146,   139.16082764,   134.08041382]])
+    array([ 1487.        ,  1385.        ,  1441.        , ...,   147.24124146,
+             139.16082764,   134.08041382])
 
     References
     ----------
@@ -107,7 +107,7 @@ class SPC(Format):
             """
             meta = self._meta_data_from_spc(spc_file)
             if spc_file.dat_fmt in ('gx-y', 'x-y'):
-                spectrum = np.array([f.y for f in spc_file.sub])
+                spectrum = np.squeeze([f.y for f in spc_file.sub])
                 wavelength = spc_file.x
                 return Spectrum(spectrum, wavelength, meta)
 

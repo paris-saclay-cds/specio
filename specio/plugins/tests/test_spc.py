@@ -27,7 +27,7 @@ def test_spc_format():
     assert reader.get_length() == 1
     assert reader.get_meta_data()['dat_fmt'] == 'x-y'
     spec = reader.get_data()
-    assert spec.spectrum.shape == (1, 1911)
+    assert spec.spectrum.shape == (1911,)
     assert spec.wavelength.shape == (1911,)
     spec = reader.get_data(0)
     assert spec.spectrum.shape == (1911,)
@@ -36,7 +36,7 @@ def test_spc_format():
 
 @pytest.mark.parametrize(
     "filename,spectrum_shape,wavelength_shape",
-    [(join(DATA_PATH, 'data', 'gxy.spc'), (1, 151), (151,)),
+    [(join(DATA_PATH, 'data', 'gxy.spc'), (151,), (151,)),
      (join(DATA_PATH, 'data', 'x-y.spc'), (31, 1024), (1024,)),
      (join(DATA_PATH, 'data', '-xy.spc'), [(8,), (6,)], [(8,), (6,)])])
 def test_spc_file(filename, spectrum_shape, wavelength_shape):
@@ -56,5 +56,5 @@ def test_spc_xy():
     filename = join(DATA_PATH, 'data', 'gxy.spc')
     spec = specread(filename)
 
-    assert spec.spectrum.shape == (1, 151)
+    assert spec.spectrum.shape == (151,)
     assert spec.wavelength.shape == (151,)

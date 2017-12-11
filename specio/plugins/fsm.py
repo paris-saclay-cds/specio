@@ -262,7 +262,7 @@ class FSM(Format):
                 else:
                     spectrum.append(data_extracted)
 
-            spectrum = np.array(spectrum)
+            spectrum = np.squeeze(spectrum)
             # we add a value such that we include the endpoint
             wavelength = np.arange(meta['z_start'],
                                    meta['z_end'] + meta['z_delta'],
