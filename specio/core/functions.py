@@ -39,7 +39,6 @@ from __future__ import print_function
 
 import os
 import glob
-from itertools import chain
 
 import numpy as np
 
@@ -153,7 +152,6 @@ def specread(uri, format=None, **kwargs):
             spectrum = [_get_reader_get_data(f, format, **kwargs)
                         for f in filenames]
             all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
-            print(all_spectrum)
 
             if all_spectrum:
                 # check that the wavelength of the different spectrum are the
