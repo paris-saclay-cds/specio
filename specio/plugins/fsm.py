@@ -6,13 +6,13 @@
 
 from __future__ import absolute_import, print_function, division
 
+import struct
+
 import numpy as np
 
 from .. import formats
 from ..core import Format
 from ..core.util import Spectrum
-
-import struct
 
 
 def _block_info(data):
