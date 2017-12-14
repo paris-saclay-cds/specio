@@ -153,14 +153,15 @@ def specread(uri, format=None, **kwargs):
             spectrum = [_get_reader_get_data(f, format, **kwargs)
                         for f in filenames]
             all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
+            print(all_spectrum)
 
             if all_spectrum:
                 # check that the wavelength of the different spectrum are the
                 # same and concatenate all spectrum in a single data structure
                 wavelength = spectrum[0].wavelength
                 try:
-                    consistant_wavelength = [np.isclose(sp.wavelength,
-                                                        wavelength)
+                    consistant_wavelength = [np.allclose(sp.wavelength,
+                                                         wavelength)
                                              for sp in spectrum]
                     if not any(consistant_wavelength):
                         return spectrum
