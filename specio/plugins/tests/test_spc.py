@@ -11,6 +11,7 @@ import pytest
 from specio import specread
 from specio import formats
 from specio.core import Request
+from specio.core import Spectrum
 from specio.datasets import load_spc_path
 
 
@@ -52,9 +53,14 @@ def test_spc_file(filename, spectrum_shape, wavelength_shape):
         assert spec.wavelength.shape == wavelength_shape
 
 
-def test_spc_xy():
-    filename = join(DATA_PATH, 'data', 'gxy.spc')
+@pytest.mark.parametrize(
+    "filename,spectrum_type,spectrum_shape",
+    [(join(DATA_PATH, 'data', '2015*.spc'), Spectrum, (5, 1911)),
+     (join(DATA_PATH, 'data', '*.spc'), list, 519)])
+def test_multiple_spc_files(filename, spectrum_type, spectrum_shape):
     spec = specread(filename)
-
-    assert spec.spectrum.shape == (151,)
-    assert spec.wavelength.shape == (151,)
+    assert isinstance(spec, spectrum_type)
+    if isinstance(spec, Spectrum):
+        assert spec.spectrum.shape == spectrum_shape
+    elif isinstance(spec, list):
+        assert len(spec) == spectrum_shape

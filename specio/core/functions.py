@@ -152,7 +152,9 @@ def specread(uri, format=None, **kwargs):
         if len(filenames) > 1:
             spectrum = [_get_reader_get_data(f, format, **kwargs)
                         for f in filenames]
-            if isinstance(spectrum[0], Spectrum):
+            all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
+
+            if all_spectrum:
                 # check that the wavelength of the different spectrum are the
                 # same and concatenate all spectrum in a single data structure
                 wavelength = spectrum[0].wavelength
@@ -160,7 +162,7 @@ def specread(uri, format=None, **kwargs):
                     consistant_wavelength = [np.isclose(sp.wavelength,
                                                         wavelength)
                                              for sp in spectrum]
-                    if not np.any(consistant_wavelength):
+                    if not any(consistant_wavelength):
                         return spectrum
 
                 except ValueError:
@@ -173,9 +175,15 @@ def specread(uri, format=None, **kwargs):
                                                  for sp in spectrum])
                     return Spectrum(np.array(spectrum_2d), wavelength, meta_2d)
 
-            elif isinstance(spectrum[0], list):
+            else:
                 # chain the spectrum into a single list
-                return chain.from_iterable(spectrum)
+                output_spectrum = []
+                for sp in spectrum:
+                    if isinstance(sp, list):
+                        output_spectrum += sp
+                    else:
+                        output_spectrum.append(sp)
+                return output_spectrum
 
         else:
             return _get_reader_get_data(filenames[0], format, **kwargs)
