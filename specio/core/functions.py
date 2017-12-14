@@ -37,7 +37,14 @@ For reading:
 
 from __future__ import print_function
 
+import os
+import glob
+from itertools import chain
+
+import numpy as np
+
 from . import Request
+from .util import Spectrum
 from .. import formats
 
 
@@ -105,6 +112,13 @@ def get_reader(uri, format=None, **kwargs):
 # Spectra
 
 
+def _get_reader_get_data(uri, format, **kwargs):
+    """Get the reader and the associated data."""
+    reader = get_reader(uri, format, **kwargs)
+    with reader:
+        return reader.get_data(index=None)
+
+
 def specread(uri, format=None, **kwargs):
     """Read spectra in a given format.
 
@@ -132,8 +146,39 @@ def specread(uri, format=None, **kwargs):
         and meta data.
 
     """
+    # Check for multiple filenames using glob
+    try:
+        filenames = sorted(glob.glob(os.path.expanduser(uri)))
+        if len(filenames) > 1:
+            spectrum = [_get_reader_get_data(f, format, **kwargs)
+                        for f in filenames]
+            if isinstance(spectrum[0], Spectrum):
+                # check that the wavelength of the different spectrum are the
+                # same and concatenate all spectrum in a single data structure
+                wavelength = spectrum[0].wavelength
+                try:
+                    consistant_wavelength = [np.isclose(sp.wavelength,
+                                                        wavelength)
+                                             for sp in spectrum]
+                    if not np.any(consistant_wavelength):
+                        return spectrum
 
-    # Get reader and read first
-    reader = get_reader(uri, format, **kwargs)
-    with reader:
-        return reader.get_data(index=None)
+                except ValueError:
+                    # the above comparison will fail when two arrays have
+                    # different sizes
+                    return spectrum
+
+                else:
+                    spectrum_2d, meta_2d = zip(*[(sp.spectrum, sp.meta)
+                                                 for sp in spectrum])
+                    return Spectrum(np.array(spectrum_2d), wavelength, meta_2d)
+
+            elif isinstance(spectrum[0], list):
+                # chain the spectrum into a single list
+                return chain.from_iterable(spectrum)
+
+        else:
+            return _get_reader_get_data(filenames[0], format, **kwargs)
+
+    except Exception:
+        return _get_reader_get_data(uri, format, **kwargs)
