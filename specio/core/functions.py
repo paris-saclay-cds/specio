@@ -172,7 +172,9 @@ def specread(uri, format=None, **kwargs):
                 else:
                     spectrum_2d, meta_2d = zip(*[(sp.spectrum, sp.meta)
                                                  for sp in spectrum])
-                    return Spectrum(np.array(spectrum_2d), wavelength, meta_2d)
+                    return Spectrum(np.vstack(spectrum_2d),
+                                    wavelength,
+                                    meta_2d)
 
             else:
                 # chain the spectrum into a single list
