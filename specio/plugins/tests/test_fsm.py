@@ -36,10 +36,20 @@ def test_fsm_format():
     assert spec.spectrum[0] == pytest.approx(38.656551)
 
 
+@pytest.mark.parametrize(
+    "filename,spectrum_shape,wavelength_shape",
+    [(load_fsm_path(), (7998, 1641), (1641,))])
+def test_fsm_file(filename, spectrum_shape, wavelength_shape):
+    spec = specread(filename)
+    assert spec.spectrum.shape == spectrum_shape
+    assert spec.wavelength.shape == wavelength_shape
+
+
 # FIXME: add an additional test with heterogeneous wavelengths
 @pytest.mark.parametrize(
     "filename,spectrum_type,spectrum_shape",
-    [(join(DATA_PATH, 'data', '372*.fsm'), Spectrum, (18658, 1641))])
+    [(join(DATA_PATH, 'data', 'fsm', 'homogeneous_wavelength', '*.fsm'),
+      Spectrum, (18658, 1641))])
 def test_multiple_fsm_files(filename, spectrum_type, spectrum_shape):
     spec = specread(filename)
     assert isinstance(spec, spectrum_type)
