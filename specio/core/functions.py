@@ -158,10 +158,10 @@ def specread(uri, format=None, **kwargs):
                 # same and concatenate all spectrum in a single data structure
                 wavelength = spectrum[0].wavelength
                 try:
-                    consistant_wavelength = [np.allclose(sp.wavelength,
+                    consistent_wavelength = [np.allclose(sp.wavelength,
                                                          wavelength)
                                              for sp in spectrum]
-                    if not any(consistant_wavelength):
+                    if not all(consistent_wavelength):
                         return spectrum
 
                 except ValueError:
