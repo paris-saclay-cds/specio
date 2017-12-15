@@ -121,14 +121,16 @@ def _get_reader_get_data(uri, format, **kwargs):
 def specread(uri, format=None, **kwargs):
     """Read spectra in a given format.
 
-    Reads spectrum from the specified file. Returns a :class:`specio.Spectrum`
-    instance containing the data, wavelength, and the meta data
+    Reads spectrum from the specified file. Returns a list or a
+    :class:`specio.Spectrum` instance containing the data, wavelength, and the
+    meta data
 
     Parameters
     ----------
     uri : {str, file}
         The resource to load the spectrum from, e.g. a filename or file object,
-        see the docs for more info.
+        see the docs for more info. It is also possible to pass a path with a
+        wildcard to match several files.
 
     format : str
         The format to use to read the file. By default specio selects
@@ -140,9 +142,10 @@ def specread(uri, format=None, **kwargs):
 
     Returns
     -------
-    spectrum : specio.Spectrum
-        A :class:`specio.Spectrum` instance containing the data, wavelength,
-        and meta data.
+    spectrum : specio.Spectrum or a list of specio.Spectrum
+        A :class:`specio.Spectrum` or a list of :class:`specio.Spectrum`
+        instance containing the spectra (``ndarray``), wavelength
+        (``ndarray``), and meta data (dict or list of ``dict``).
 
     """
     # Check for multiple filenames using glob
