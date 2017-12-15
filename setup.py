@@ -6,6 +6,16 @@ ver_file = os.path.join('specio', '_version.py')
 with open(ver_file) as f:
     exec(f.read())
 
+# get path of all data files used for testing
+data_dir = [os.path.join('specio', 'core', 'tests', 'data'),
+            os.path.join('specio', 'plugins', 'tests', 'data'),
+            os.path.join('specio', 'datasets', 'data')]
+# recursively find the data
+data_files = [os.path.join(d, f)
+              for sub_dir in data_dir
+              for d, folders, files in os.walk(sub_dir)
+              for f in files]
+
 PACKAGES = find_packages()
 
 CLASSIFIERS = ["Environment :: Console",
@@ -39,9 +49,7 @@ AUTHOR = "Guillaume Lemaitre"
 AUTHOR_EMAIL = "g.lemaitre58@gmail.com"
 PLATFORMS = "OS Independent"
 VERSION = __version__
-PACKAGE_DATA = {'specio': ['core/tests/data/*.*',
-                           'plugins/tests/data/*.*',
-                           'datasets/data/*.*']}
+PACKAGE_DATA = {'specio': data_files}
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',

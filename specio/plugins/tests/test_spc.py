@@ -37,9 +37,12 @@ def test_spc_format():
 
 @pytest.mark.parametrize(
     "filename,spectrum_shape,wavelength_shape",
-    [(join(DATA_PATH, 'data', 'gxy.spc'), (151,), (151,)),
-     (join(DATA_PATH, 'data', 'x-y.spc'), (31, 1024), (1024,)),
-     (join(DATA_PATH, 'data', '-xy.spc'), [(8,), (6,)], [(8,), (6,)])])
+    [(join(DATA_PATH, 'data', 'spc', 'single_file', 'gxy.spc'),
+      (151,), (151,)),
+     (join(DATA_PATH, 'data', 'spc', 'single_file', 'x-y.spc'),
+      (31, 1024), (1024,)),
+     (join(DATA_PATH, 'data', 'spc', 'single_file', '-xy.spc'),
+      [(8,), (6,)], [(8,), (6,)])])
 def test_spc_file(filename, spectrum_shape, wavelength_shape):
     spec = specread(filename)
     if isinstance(spec, list):
@@ -55,8 +58,11 @@ def test_spc_file(filename, spectrum_shape, wavelength_shape):
 
 @pytest.mark.parametrize(
     "filename,spectrum_type,spectrum_shape",
-    [(join(DATA_PATH, 'data', '2015*.spc'), Spectrum, (5, 1911)),
-     (join(DATA_PATH, 'data', '*.spc'), list, 519)])
+    [(join(DATA_PATH, 'data', 'spc', 'homogeneous_wavelength', '*.spc'),
+      Spectrum, (2, 1911)),
+     (join(DATA_PATH, 'data', 'spc', 'heterogeneous_wavelength', '*.spc'),
+      list, 514),
+     (join(DATA_PATH, 'data', 'spc', 'single_file', '*.spc'), list, 514)])
 def test_multiple_spc_files(filename, spectrum_type, spectrum_shape):
     spec = specread(filename)
     assert isinstance(spec, spectrum_type)
