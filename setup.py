@@ -11,10 +11,9 @@ data_dir = [os.path.join('specio', 'core', 'tests', 'data'),
             os.path.join('specio', 'plugins', 'tests', 'data'),
             os.path.join('specio', 'datasets', 'data')]
 # recursively find the data
-data_files = [os.path.join(d, f)
+data_files = [(d, [os.path.join(d, f) for f in files])
               for sub_dir in data_dir
-              for d, folders, files in os.walk(sub_dir)
-              for f in files]
+              for d, folders, files in os.walk(sub_dir)]
 
 PACKAGES = find_packages()
 
@@ -49,7 +48,7 @@ AUTHOR = "Guillaume Lemaitre"
 AUTHOR_EMAIL = "g.lemaitre58@gmail.com"
 PLATFORMS = "OS Independent"
 VERSION = __version__
-PACKAGE_DATA = {'specio': data_files}
+DATA_FILES = data_files
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
@@ -77,7 +76,7 @@ opts = dict(name=NAME,
             platforms=PLATFORMS,
             version=VERSION,
             packages=PACKAGES,
-            package_data=PACKAGE_DATA,
+            data_files=DATA_FILES,
             include_package_data=True,
             extras_require=EXTRAS_REQUIRE)
 
