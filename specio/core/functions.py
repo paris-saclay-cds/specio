@@ -39,6 +39,7 @@ from __future__ import print_function
 
 import os
 import glob
+from itertools import chain
 
 import numpy as np
 
@@ -118,6 +119,14 @@ def _get_reader_get_data(uri, format, **kwargs):
         return reader.get_data(index=None)
 
 
+def _validate_filenames(uri):
+    if isinstance(uri, list):
+        return chain.from_iterable([sorted(glob.glob(os.path.expanduser(f)))
+                                    for f in uri])
+    else:
+        return sorted(glob.glob(os.path.expanduser(uri)))
+
+
 def specread(uri, format=None, **kwargs):
     """Read spectra in a given format.
 
@@ -127,10 +136,13 @@ def specread(uri, format=None, **kwargs):
 
     Parameters
     ----------
-    uri : {str, file}
-        The resource to load the spectrum from, e.g. a filename or file object,
-        see the docs for more info. It is also possible to pass a path with a
-        wildcard to match several files.
+    uri : {str, list of str, file}
+        The resource to load the spectrum from. The input accepted are:
+
+            * a filename or a list of filename of spectrum;
+            * a filename or a list of filename containing a wildcard
+              (e.g. ``'./data/*.spc'``);
+            * a file object.
 
     format : str
         The format to use to read the file. By default specio selects
@@ -148,9 +160,8 @@ def specread(uri, format=None, **kwargs):
         (``ndarray``), and meta data (dict or list of ``dict``).
 
     """
-    # Check for multiple filenames using glob
     try:
-        filenames = sorted(glob.glob(os.path.expanduser(uri)))
+        filenames = _validate_filenames(uri)
         if len(filenames) > 1:
             spectrum = [_get_reader_get_data(f, format, **kwargs)
                         for f in filenames]

@@ -52,7 +52,8 @@ DATA_FILES = data_files
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
-        'pytest-cov'],
+        'pytest-cov',
+        'pytest-mock'],
     'docs': [
         'sphinx',
         'sphinx-gallery',

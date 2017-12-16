@@ -61,7 +61,7 @@ def test_spc_file(filename, spectrum_shape, wavelength_shape):
     [(join(DATA_PATH, 'data', 'spc', 'homogeneous_wavelength', '*.spc'),
       Spectrum, (2, 1911)),
      (join(DATA_PATH, 'data', 'spc', 'heterogeneous_wavelength', '*.spc'),
-      list, 514),
+      list, 3),
      (join(DATA_PATH, 'data', 'spc', 'single_file', '*.spc'), list, 514)])
 def test_multiple_spc_files(filename, spectrum_type, spectrum_shape):
     spec = specread(filename)
