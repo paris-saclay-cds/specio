@@ -6,6 +6,15 @@ ver_file = os.path.join('specio', '_version.py')
 with open(ver_file) as f:
     exec(f.read())
 
+# get path of all data files used for testing
+data_dir = [os.path.join('specio', 'core', 'tests', 'data'),
+            os.path.join('specio', 'plugins', 'tests', 'data'),
+            os.path.join('specio', 'datasets', 'data')]
+# recursively find the data
+data_files = [(d, [os.path.join(d, f) for f in files])
+              for sub_dir in data_dir
+              for d, folders, files in os.walk(sub_dir)]
+
 PACKAGES = find_packages()
 
 CLASSIFIERS = ["Environment :: Console",
@@ -13,7 +22,6 @@ CLASSIFIERS = ["Environment :: Console",
                "License :: OSI Approved :: BSD 3",
                "Operating System :: OS Independent",
                'Programming Language :: Python :: 2.7',
-               'Programming Language :: Python :: 3.4',
                'Programming Language :: Python :: 3.5',
                'Programming Language :: Python :: 3.6',
                "Topic :: Scientific/Engineering"]
@@ -39,13 +47,12 @@ AUTHOR = "Guillaume Lemaitre"
 AUTHOR_EMAIL = "g.lemaitre58@gmail.com"
 PLATFORMS = "OS Independent"
 VERSION = __version__
-PACKAGE_DATA = {'specio': ['core/tests/data/*.*',
-                           'plugins/tests/data/*.*',
-                           'datasets/data/*.*']}
+DATA_FILES = data_files
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
-        'pytest-cov'],
+        'pytest-cov',
+        'pytest-mock'],
     'docs': [
         'sphinx',
         'sphinx-gallery',
@@ -69,7 +76,7 @@ opts = dict(name=NAME,
             platforms=PLATFORMS,
             version=VERSION,
             packages=PACKAGES,
-            package_data=PACKAGE_DATA,
+            data_files=DATA_FILES,
             include_package_data=True,
             extras_require=EXTRAS_REQUIRE)
 

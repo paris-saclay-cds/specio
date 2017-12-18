@@ -37,7 +37,14 @@ For reading:
 
 from __future__ import print_function
 
+import os
+import glob
+from itertools import chain
+
+import numpy as np
+
 from . import Request
+from .util import Spectrum
 from .. import formats
 
 
@@ -105,17 +112,37 @@ def get_reader(uri, format=None, **kwargs):
 # Spectra
 
 
+def _get_reader_get_data(uri, format, **kwargs):
+    """Get the reader and the associated data."""
+    reader = get_reader(uri, format, **kwargs)
+    with reader:
+        return reader.get_data(index=None)
+
+
+def _validate_filenames(uri):
+    if isinstance(uri, list):
+        return chain.from_iterable([sorted(glob.glob(os.path.expanduser(f)))
+                                    for f in uri])
+    else:
+        return sorted(glob.glob(os.path.expanduser(uri)))
+
+
 def specread(uri, format=None, **kwargs):
     """Read spectra in a given format.
 
-    Reads spectrum from the specified file. Returns a :class:`specio.Spectrum`
-    instance containing the data, wavelength, and the meta data
+    Reads spectrum from the specified file. Returns a list or a
+    :class:`specio.Spectrum` instance containing the data, wavelength, and the
+    meta data
 
     Parameters
     ----------
-    uri : {str, file}
-        The resource to load the spectrum from, e.g. a filename or file object,
-        see the docs for more info.
+    uri : {str, list of str, file}
+        The resource to load the spectrum from. The input accepted are:
+
+            * a filename or a list of filename of spectrum;
+            * a filename or a list of filename containing a wildcard
+              (e.g. ``'./data/*.spc'``);
+            * a file object.
 
     format : str
         The format to use to read the file. By default specio selects
@@ -127,13 +154,54 @@ def specread(uri, format=None, **kwargs):
 
     Returns
     -------
-    spectrum : specio.Spectrum
-        A :class:`specio.Spectrum` instance containing the data, wavelength,
-        and meta data.
+    spectrum : specio.Spectrum or a list of specio.Spectrum
+        A :class:`specio.Spectrum` or a list of :class:`specio.Spectrum`
+        instance containing the spectra (``ndarray``), wavelength
+        (``ndarray``), and meta data (dict or list of ``dict``).
 
     """
+    try:
+        filenames = _validate_filenames(uri)
+        if len(filenames) > 1:
+            spectrum = [_get_reader_get_data(f, format, **kwargs)
+                        for f in filenames]
+            all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
 
-    # Get reader and read first
-    reader = get_reader(uri, format, **kwargs)
-    with reader:
-        return reader.get_data(index=None)
+            if all_spectrum:
+                # check that the wavelength of the different spectrum are the
+                # same and concatenate all spectrum in a single data structure
+                wavelength = spectrum[0].wavelength
+                try:
+                    consistent_wavelength = [np.allclose(sp.wavelength,
+                                                         wavelength)
+                                             for sp in spectrum]
+                    if not all(consistent_wavelength):
+                        return spectrum
+
+                except ValueError:
+                    # the above comparison will fail when two arrays have
+                    # different sizes
+                    return spectrum
+
+                else:
+                    spectrum_2d, meta_2d = zip(*[(sp.spectrum, sp.meta)
+                                                 for sp in spectrum])
+                    return Spectrum(np.vstack(spectrum_2d),
+                                    wavelength,
+                                    meta_2d)
+
+            else:
+                # chain the spectrum into a single list
+                output_spectrum = []
+                for sp in spectrum:
+                    if isinstance(sp, list):
+                        output_spectrum += sp
+                    else:
+                        output_spectrum.append(sp)
+                return output_spectrum
+
+        else:
+            return _get_reader_get_data(filenames[0], format, **kwargs)
+
+    except Exception:
+        return _get_reader_get_data(uri, format, **kwargs)

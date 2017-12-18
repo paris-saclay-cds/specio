@@ -11,6 +11,7 @@ import pytest
 from specio import specread
 from specio import formats
 from specio.core import Request
+from specio.core import Spectrum
 from specio.datasets import load_spc_path
 
 
@@ -36,9 +37,12 @@ def test_spc_format():
 
 @pytest.mark.parametrize(
     "filename,spectrum_shape,wavelength_shape",
-    [(join(DATA_PATH, 'data', 'gxy.spc'), (151,), (151,)),
-     (join(DATA_PATH, 'data', 'x-y.spc'), (31, 1024), (1024,)),
-     (join(DATA_PATH, 'data', '-xy.spc'), [(8,), (6,)], [(8,), (6,)])])
+    [(join(DATA_PATH, 'data', 'spc', 'single_file', 'gxy.spc'),
+      (151,), (151,)),
+     (join(DATA_PATH, 'data', 'spc', 'single_file', 'x-y.spc'),
+      (31, 1024), (1024,)),
+     (join(DATA_PATH, 'data', 'spc', 'single_file', '-xy.spc'),
+      [(8,), (6,)], [(8,), (6,)])])
 def test_spc_file(filename, spectrum_shape, wavelength_shape):
     spec = specread(filename)
     if isinstance(spec, list):
@@ -50,11 +54,3 @@ def test_spc_file(filename, spectrum_shape, wavelength_shape):
     else:
         assert spec.spectrum.shape == spectrum_shape
         assert spec.wavelength.shape == wavelength_shape
-
-
-def test_spc_xy():
-    filename = join(DATA_PATH, 'data', 'gxy.spc')
-    spec = specread(filename)
-
-    assert spec.spectrum.shape == (151,)
-    assert spec.wavelength.shape == (151,)
