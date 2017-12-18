@@ -2,24 +2,20 @@
 specio's user API
 ###################
 
-.. automodule:: specio.core.functions
+Spectra reader functions
+========================
 
-----
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
 
-.. autofunction:: specio.help
+   specio.help
+   specio.show_formats
+   specio.specread
+   specio.get_reader
 
-.. autofunction :: specio.show_formats
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
 
-----
-
-.. autofunction:: specio.specread
-
-----
-
-.. autofunction:: specio.get_reader
-
-----
-
-.. autoclass:: specio.core.format.Reader
-    :inherited-members:
-    :members:
+   specio.core.format.Reader
