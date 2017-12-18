@@ -123,6 +123,8 @@ class SPC(Format):
             self._fp = self.request.get_local_filename()
             self._data = self._spc_to_numpy(spc.File(self._fp))
             self._length = len(self._data)
+            # additionally add the filename to the meta data
+            self._data.meta['filename'] = self.request.get_local_filename()
 
         def _close(self):
             # Close the reader.

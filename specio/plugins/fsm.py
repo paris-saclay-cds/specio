@@ -274,6 +274,8 @@ class FSM(Format):
             self._fp = self.request.get_file()
             self._data = self._read_fsm(self._fp)
             self._length = self._data.spectrum.shape[0]
+            # additionally add the filename into the meta data
+            self._data.meta['filename'] = self.request.get_local_filename()
 
         def _close(self):
             # Close the reader.
