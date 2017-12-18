@@ -4,18 +4,12 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
-from os.path import join, dirname
-
 import pytest
 
 from specio import formats
 from specio import specread
 from specio.core import Request
-from specio.core import Spectrum
 from specio.datasets import load_fsm_path
-
-
-DATA_PATH = dirname(__file__)
 
 
 def test_fsm_format():

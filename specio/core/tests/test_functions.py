@@ -14,9 +14,6 @@ from numpy.testing import assert_allclose
 from specio import help, get_reader, specread
 from specio.core import Spectrum
 
-# this function will be mocked later on
-from specio.core import functions
-
 DATA_PATH = module_path = dirname(__file__)
 RNG = np.random.RandomState(0)
 

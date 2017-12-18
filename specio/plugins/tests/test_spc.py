@@ -11,7 +11,6 @@ import pytest
 from specio import specread
 from specio import formats
 from specio.core import Request
-from specio.core import Spectrum
 from specio.datasets import load_spc_path
 
 
