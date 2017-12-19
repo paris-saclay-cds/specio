@@ -47,9 +47,9 @@ def test_specread_single_file():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
     spec1 = specread(filename)
     spec2 = specread(filename, 'foobar')
-    assert spec1.spectrum.shape == (1, 801)
+    assert spec1.amplitudes.shape == (1, 801)
     assert spec1.wavelength.shape == (801,)
-    assert_allclose(spec1.spectrum, spec2.spectrum)
+    assert_allclose(spec1.amplitudes, spec2.amplitudes)
     assert_allclose(spec1.wavelength, spec2.wavelength)
 
 
@@ -106,7 +106,7 @@ def test_specread_consitent_wavelength(side_effect, spectra_type,
     spectra = specread('')
     assert isinstance(spectra, spectra_type)
     if isinstance(spectra, Spectrum):
-        assert spectra.spectrum.shape == spectra_shape
+        assert spectra.amplitudes.shape == spectra_shape
         assert spectra.wavelength.shape == (spectra_shape[1],)
         assert spectra.meta == tuple({} for _ in range(spectra_shape[0]))
     elif isinstance(spectra, list):

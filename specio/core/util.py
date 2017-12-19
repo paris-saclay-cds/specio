@@ -61,8 +61,8 @@ class Spectrum(object):
 
     Parameters
     ----------
-    spectrum : ndarray, shape (n_wavelength) or (n_spectra, n_wavelength)
-        The spectrum read.
+    amplitudes : ndarray, shape (n_wavelength) or (n_spectra, n_wavelength)
+        The amplitudes or counts.
 
     wavelength : ndarray, shape (n_wavelength,)
         The corresponding wavelength.
@@ -77,41 +77,41 @@ class Spectrum(object):
     """
 
     @staticmethod
-    def _validate_spectrum_wavelength(spectrum, wavelength):
+    def _validate_amplitudes_wavelength(amplitudes, wavelength):
         msg = ("The number of frequencies in wavelength and spectra are"
-               " not equal. Wavelength: {} - Spectrum: {}.")
-        if wavelength.ndim == 1 and spectrum.ndim == 2:
-            if wavelength.shape[0] != spectrum.shape[1]:
+               " not equal. Wavelength: {} - Amplitudes: {}.")
+        if wavelength.ndim == 1 and amplitudes.ndim == 2:
+            if wavelength.shape[0] != amplitudes.shape[1]:
                 raise ValueError(msg.format(wavelength.shape[0],
-                                            spectrum.shape[1]))
-        elif wavelength.ndim == 1 and spectrum.ndim == 1:
-            if wavelength.size != spectrum.size:
+                                            amplitudes.shape[1]))
+        elif wavelength.ndim == 1 and amplitudes.ndim == 1:
+            if wavelength.size != amplitudes.size:
                 raise ValueError(msg.format(wavelength.size,
-                                            spectrum.size))
+                                            amplitudes.size))
         else:
-            raise ValueError("The dimension of wavelength and spectrum are"
+            raise ValueError("The dimension of wavelength and amplitudes are"
                              " incorrect. They need to be 1-D or 2-D."
-                             " Wavelength {} - Spectrum: {}".format(
-                                 wavelength.shape, spectrum.shape))
+                             " Wavelength {} - Amplitudes: {}".format(
+                                 wavelength.shape, amplitudes.shape))
 
-        return spectrum, wavelength
+        return amplitudes, wavelength
 
-    def __init__(self, spectrum, wavelength, meta=None):
-        self.spectrum, self.wavelength = self._validate_spectrum_wavelength(
-            spectrum, wavelength)
+    def __init__(self, amplitudes, wavelength, meta=None):
+        self.amplitudes, self.wavelength = \
+            self._validate_amplitudes_wavelength(amplitudes, wavelength)
         self.meta = meta if meta is not None else {}
 
     def __len__(self):
-        if self.spectrum.ndim == 1:
+        if self.amplitudes.ndim == 1:
             return 1
         else:
-            return self.spectrum.shape[0]
+            return self.amplitudes.shape[0]
 
     def __repr__(self):
         msg = ("Spectrum: \n"
                "wavelength:\n {} \n"
-               "spectra: \n {} \n"
+               "amplitudes: \n {} \n"
                "metadata: \n {} \n".format(self.wavelength,
-                                           self.spectrum,
+                                           self.amplitudes,
                                            self.meta))
         return msg

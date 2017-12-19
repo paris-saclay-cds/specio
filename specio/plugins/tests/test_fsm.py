@@ -22,9 +22,9 @@ def test_fsm_format():
     assert reader.get_length() == 7998
     assert reader.get_meta_data()['signature'] == b'PEPE'
     spec = reader.get_data()
-    assert spec.spectrum.shape == (7998, 1641)
+    assert spec.amplitudes.shape == (7998, 1641)
     assert spec.wavelength.shape == (1641,)
     spec = reader.get_data(0)
-    assert spec.spectrum.shape == (1641,)
+    assert spec.amplitudes.shape == (1641,)
     assert spec.wavelength.shape == (1641,)
-    assert spec.spectrum[0] == pytest.approx(38.656551)
+    assert spec.amplitudes[0] == pytest.approx(38.656551)

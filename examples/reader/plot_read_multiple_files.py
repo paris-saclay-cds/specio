@@ -33,7 +33,7 @@ spectra = specread(spc_filenames)
 
 # Plot the first spectra
 plt.plot(spectra.wavelength,
-         spectra.spectrum.T)
+         spectra.amplitudes.T)
 
 # We get the axis information by using the meta data of the first file read.
 plt.xlabel(spectra.meta[0]['xlabel'])

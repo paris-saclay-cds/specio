@@ -21,6 +21,6 @@ from specio.datasets import load_spc_path
 def test_toy_data(filename, spectrum_shape, wavelength_shape):
     spec = specread(filename)
     assert isinstance(spec, Spectrum)
-    assert spec.spectrum.shape == spectrum_shape
+    assert spec.amplitudes.shape == spectrum_shape
     assert spec.wavelength.shape == wavelength_shape
     assert spec.meta['filename'] == basename(filename)

@@ -28,7 +28,7 @@ spectra = specread(spc_filename)
 
 # Plot the first spectra
 plt.plot(spectra.wavelength,
-         spectra.spectrum)
+         spectra.amplitudes)
 plt.xlabel(spectra.meta['xlabel'])
 plt.ylabel(spectra.meta['ylabel'])
 plt.show()
