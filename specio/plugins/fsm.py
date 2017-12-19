@@ -6,7 +6,10 @@
 
 from __future__ import absolute_import, print_function, division
 
+from os.path import basename
+
 import numpy as np
+from six import string_types
 
 from .. import formats
 from ..core import Format
@@ -267,6 +270,10 @@ class FSM(Format):
             wavelength = np.arange(meta['z_start'],
                                    meta['z_end'] + meta['z_delta'],
                                    meta['z_delta'])
+            if isinstance(fsm_file, string_types):
+                meta['filename'] = basename(fsm_file)
+            else:
+                meta['filename'] = basename(fsm_file.name)
 
             return Spectrum(spectrum, wavelength, meta)
 
