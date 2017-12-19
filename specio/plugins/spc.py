@@ -8,6 +8,7 @@ from __future__ import absolute_import, print_function, division
 
 import struct
 import warnings
+from os.path import basename
 
 import numpy as np
 
@@ -25,12 +26,16 @@ IGNORED_ATTRIBUTES = ('x', 'sub')
 class SPC(Format):
     """Plugin to read SPC file which store spectrostopic data.
 
-    The SPC file format is a file format in which all kinds of spectroscopic
-    data, including amongst others infrared spectra, Raman spectra and UV/VIS
-    spectra. The format can be regarded as a database with records of variable
-    length and each record stores a different kind of data (instrumental
-    information, information on one spectrum of a dataset, the spectrum itself
-    or extra logs).
+    The SPC file format [1]_ is a file format in which all kinds of
+    spectroscopic data, including amongst others infrared spectra, Raman
+    spectra and UV/VIS spectra. The format can be regarded as a database with
+    records of variable length and each record stores a different kind of data
+    (instrumental information, information on one spectrum of a dataset, the
+    spectrum itself or extra logs).
+
+    Notes
+    -----
+    See :ref:`sphx_glr_auto_examples_reader_plot_read_spc.py`.
 
     Examples
     --------
@@ -91,13 +96,16 @@ class SPC(Format):
 
             return meta
 
-        def _spc_to_numpy(self, spc_file):
+        def _spc_to_numpy(self, spc_file, spc_filename):
             """Convert the SPC File data to spectrum data.
 
             Parameters
             ----------
             spc_file : spc.File
                 The SPC File to be converted.
+
+            spc_filename : string
+                The SPC filename to be added to the dictionary.
 
             Returns
             -------
@@ -106,6 +114,7 @@ class SPC(Format):
 
             """
             meta = self._meta_data_from_spc(spc_file)
+            meta['filename'] = basename(spc_filename)
             if spc_file.dat_fmt in ('gx-y', 'x-y'):
                 spectrum = np.squeeze([f.y for f in spc_file.sub])
                 wavelength = spc_file.x
@@ -121,7 +130,7 @@ class SPC(Format):
             import spc
             # Open the reader
             self._fp = self.request.get_local_filename()
-            self._data = self._spc_to_numpy(spc.File(self._fp))
+            self._data = self._spc_to_numpy(spc.File(self._fp), self._fp)
             self._length = len(self._data)
 
         def _close(self):

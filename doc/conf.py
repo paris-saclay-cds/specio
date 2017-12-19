@@ -22,14 +22,11 @@ import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
 import sphinx_rtd_theme
+import specio
 
-try:
-    import gen_rst
-except:
-    pass
+from numpydoc.docscrape_sphinx import SphinxDocString
 
 sys.path.insert(0, os.path.abspath('sphinxext'))
-
 from github_link import make_linkcode_resolve
 
 # -- General configuration ------------------------------------------------
@@ -47,6 +44,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',
               'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
               'sphinx_gallery.gen_gallery',
               'numpydoc',
               'sphinx_issues',
@@ -54,7 +52,6 @@ extensions = ['sphinx.ext.autodoc',
               'specio_ext']
 
 # Monkey-patch numpydoc to don't do the autosummary thing
-from numpydoc.docscrape_sphinx import SphinxDocString
 assert SphinxDocString._str_member_list
 SphinxDocString._str_member_list = lambda self, name: []
 
@@ -62,19 +59,21 @@ autosummary_generate = True
 
 autodoc_default_flags = ['members', 'inherited-members']
 
+# intersphinx configuration
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/{.major}'.format(
+        sys.version_info), None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'matplotlib': ('https://matplotlib.org/', None),
+}
+
+# sphinx-gallery configuration
 sphinx_gallery_conf = {
-    # path to your examples scripts
-    'examples_dirs': '../examples',
-    # path where to save gallery generated examples
-    'gallery_dirs': 'auto_examples',
-    # to make references clickable
     'doc_module': 'specio',
+    'backreferences_dir': os.path.join('generated'),
     'reference_url': {
-        'specio': None,
-        'matplotlib': 'http://matplotlib.org',
-        'numpy': 'http://docs.scipy.org/doc/numpy-1.11.0',
-        'scipy': 'http://docs.scipy.org/doc/scipy-0.18.0/reference'
-    }
+        'specio': None}
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -98,7 +97,6 @@ author = 'Guillaume Lemaitre'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-import specio
 # The short X.Y version.
 version = specio.__version__
 # The full version, including alpha/beta/rc tags.
@@ -208,7 +206,7 @@ texinfo_documents = [
 def generate_example_rst(app, what, name, obj, options, lines):
     # generate empty examples files, so that we don't get
     # inclusion errors if there are no examples for a class / module
-    examples_path = os.path.join(app.srcdir, "modules", "generated",
+    examples_path = os.path.join(app.srcdir, "generated",
                                  "%s.examples" % name)
     if not os.path.exists(examples_path):
         # touch file
@@ -225,8 +223,9 @@ issues_user_uri = 'https://github.com/{user}'
 def setup(app):
     app.connect('autodoc-process-docstring', generate_example_rst)
 
+
 # The following is used by sphinx.ext.linkcode to provide links to github
 linkcode_resolve = make_linkcode_resolve('specio',
-                                         u'https://github.com/paris-saclay-cds/'
-                                         'specio/blob/{revision}/'
+                                         u'https://github.com/paris-saclay'
+                                         '-cds/specio/blob/{revision}/'
                                          '{package}/{path}#L{lineno}')

@@ -3,4 +3,4 @@
 General examples
 ----------------
 
-Somewhere to start
+General examples to introduce ``specio``.

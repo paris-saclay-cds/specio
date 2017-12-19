@@ -7,6 +7,7 @@
 import pytest
 
 from specio import formats
+from specio import specread
 from specio.core import Request
 from specio.datasets import load_fsm_path
 

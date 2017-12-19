@@ -8,12 +8,14 @@ from os.path import join, dirname
 
 import pytest
 
+import numpy as np
 from numpy.testing import assert_allclose
 
 from specio import help, get_reader, specread
+from specio.core import Spectrum
 
 DATA_PATH = module_path = dirname(__file__)
-RELATIVE_TOLERANCE = 1e-4
+RNG = np.random.RandomState(0)
 
 
 def test_help():
@@ -41,7 +43,7 @@ def test_get_reader_error(type_error, msg, filename, file_format):
         get_reader(filename, format=file_format)
 
 
-def test_specread():
+def test_specread_single_file():
     filename = join(DATA_PATH, 'data', 'spectra.foobar')
     spec1 = specread(filename)
     spec2 = specread(filename, 'foobar')
@@ -49,3 +51,63 @@ def test_specread():
     assert spec1.wavelength.shape == (801,)
     assert_allclose(spec1.spectrum, spec2.spectrum)
     assert_allclose(spec1.wavelength, spec2.wavelength)
+
+
+def _generate_spectrum_identical_wavelength(*args):
+    """Generate spectrum with identical wavelength."""
+    n_wavelength = 5
+    return Spectrum(np.random.random_sample(n_wavelength),
+                    np.arange(n_wavelength),
+                    None)
+
+
+def _generate_spectrum_different_wavelength_size(*args):
+    """Generate spectrum with different wavelength size."""
+    n_wavelength = np.random.randint(10, 20)
+    return Spectrum(np.random.random_sample(n_wavelength),
+                    np.arange(n_wavelength),
+                    None)
+
+
+def _generate_spectrum_different_wavelength(*args):
+    """Generate spectrum with identical wavelength."""
+    n_wavelength = 5
+    return Spectrum(np.random.random_sample(n_wavelength),
+                    np.random.permutation(np.arange(n_wavelength)),
+                    None)
+
+
+def _generate_list_spectrum(*args):
+    """Generate spectrum with identical wavelength."""
+    n_spectrum = RNG.randint(1, 5)
+    n_wavelength = 5
+    return [Spectrum(np.random.random_sample(n_wavelength),
+                     np.arange(n_wavelength),
+                     None)
+            for _ in range(n_spectrum)]
+
+
+@pytest.mark.parametrize(
+    "side_effect,spectra_type,spectra_shape",
+    [(_generate_spectrum_identical_wavelength, Spectrum, (10, 5)),
+     (_generate_spectrum_different_wavelength_size, list, 10),
+     (_generate_spectrum_different_wavelength, list, 10),
+     (_generate_list_spectrum, list, 30)])
+def test_specread_consitent_wavelength(side_effect, spectra_type,
+                                       spectra_shape, mocker):
+    # emulate that we read several file
+    mocker.patch('specio.core.functions._validate_filenames',
+                 return_value=['filename' for _ in range(10)])
+
+    mocker.patch('specio.core.functions._get_reader_get_data',
+                 side_effect=side_effect)
+
+    # emulate the spectrum reading
+    spectra = specread('')
+    assert isinstance(spectra, spectra_type)
+    if isinstance(spectra, Spectrum):
+        assert spectra.spectrum.shape == spectra_shape
+        assert spectra.wavelength.shape == (spectra_shape[1],)
+        assert spectra.meta == tuple({} for _ in range(spectra_shape[0]))
+    elif isinstance(spectra, list):
+        assert len(spectra) == spectra_shape
