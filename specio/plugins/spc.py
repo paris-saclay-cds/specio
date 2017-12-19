@@ -8,8 +8,10 @@ from __future__ import absolute_import, print_function, division
 
 import struct
 import warnings
+from os.path import basename
 
 import numpy as np
+from six import string_types
 
 from .. import formats
 from ..core import Format
@@ -91,13 +93,16 @@ class SPC(Format):
 
             return meta
 
-        def _spc_to_numpy(self, spc_file):
+        def _spc_to_numpy(self, spc_file, spc_filename):
             """Convert the SPC File data to spectrum data.
 
             Parameters
             ----------
             spc_file : spc.File
                 The SPC File to be converted.
+
+            spc_filename : string
+                The SPC filename to be added to the dictionary.
 
             Returns
             -------
@@ -106,6 +111,7 @@ class SPC(Format):
 
             """
             meta = self._meta_data_from_spc(spc_file)
+            meta['filename'] = basename(spc_filename)
             if spc_file.dat_fmt in ('gx-y', 'x-y'):
                 spectrum = np.squeeze([f.y for f in spc_file.sub])
                 wavelength = spc_file.x
@@ -121,10 +127,8 @@ class SPC(Format):
             import spc
             # Open the reader
             self._fp = self.request.get_local_filename()
-            self._data = self._spc_to_numpy(spc.File(self._fp))
+            self._data = self._spc_to_numpy(spc.File(self._fp), self._fp)
             self._length = len(self._data)
-            # additionally add the filename to the meta data
-            self._data.meta['filename'] = self.request.get_local_filename()
 
         def _close(self):
             # Close the reader.

@@ -4,6 +4,8 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
+from os.path import basename
+
 import pytest
 
 from specio import specread
@@ -21,4 +23,4 @@ def test_toy_data(filename, spectrum_shape, wavelength_shape):
     assert isinstance(spec, Spectrum)
     assert spec.spectrum.shape == spectrum_shape
     assert spec.wavelength.shape == wavelength_shape
-    assert spec.meta['filename'] == filename
+    assert spec.meta['filename'] == basename(filename)
