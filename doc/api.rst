@@ -50,7 +50,7 @@ from the class :class:`specio.core.Spectrum`. This class is composed of three
 attributes:
 
 * a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
-  (n_spectra, n_wavelength) ``spectrum`` containing the counts/amplitude for
+  (n_spectra, n_wavelength) ``amplitudes`` containing the counts/amplitude for
   the different wavelengths;
 * a 1D ndarray of shape (n_wavelength,) ``wavelength`` containing the
   wavelength for which the spectra have been acquired;

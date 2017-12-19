@@ -159,7 +159,7 @@ def specread(uri, format=None, **kwargs):
         :class:`specio.core.Spectrum`.
         A :class:`specio.core.Spectrum` contains:
             * a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
-              (n_spectra, n_wavelength) ``spectrum``;
+              (n_spectra, n_wavelength) ``amplitudes``;
             * a 1D ndarray of shape (n_wavelength,) ``wavelength``;
             * a dict ``meta``.
 
@@ -196,7 +196,7 @@ def specread(uri, format=None, **kwargs):
                     return spectrum
 
                 else:
-                    spectrum_2d, meta_2d = zip(*[(sp.spectrum, sp.meta)
+                    spectrum_2d, meta_2d = zip(*[(sp.amplitudes, sp.meta)
                                                  for sp in spectrum])
                     return Spectrum(np.vstack(spectrum_2d),
                                     wavelength,

@@ -27,10 +27,10 @@ def test_spc_format():
     assert reader.get_length() == 1
     assert reader.get_meta_data()['dat_fmt'] == 'x-y'
     spec = reader.get_data()
-    assert spec.spectrum.shape == (1911,)
+    assert spec.amplitudes.shape == (1911,)
     assert spec.wavelength.shape == (1911,)
     spec = reader.get_data(0)
-    assert spec.spectrum.shape == (1911,)
+    assert spec.amplitudes.shape == (1911,)
     assert spec.wavelength.shape == (1911,)
 
 
@@ -48,8 +48,8 @@ def test_spc_file(filename, spectrum_shape, wavelength_shape):
         # in '-xy.spc', there is two different wavelength size: we are checking
         # each of them
         for wi in range(1):
-            assert spec[wi].spectrum.shape == spectrum_shape[wi]
+            assert spec[wi].amplitudes.shape == spectrum_shape[wi]
             assert spec[wi].wavelength.shape == wavelength_shape[wi]
     else:
-        assert spec.spectrum.shape == spectrum_shape
+        assert spec.amplitudes.shape == spectrum_shape
         assert spec.wavelength.shape == wavelength_shape

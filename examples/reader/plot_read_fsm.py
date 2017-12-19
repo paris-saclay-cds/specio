@@ -28,5 +28,5 @@ spectra = specread(fsm_filename)
 
 # Plot the first spectra
 plt.plot(spectra.wavelength,
-         spectra.spectrum[0])
+         spectra.amplitudes[0])
 plt.show()

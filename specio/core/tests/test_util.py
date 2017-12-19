@@ -29,7 +29,7 @@ def test_spectrum_error(spectrum, wavelength, msg):
      (np.ones((10,)), np.ones((10,)), {'kind': 'random'})])
 def test_spectrum(spectrum, wavelength, metadata):
     spec = Spectrum(spectrum, wavelength, metadata)
-    assert_allclose(spec.spectrum, spectrum)
+    assert_allclose(spec.amplitudes, spectrum)
     assert_allclose(spec.wavelength, wavelength)
     assert spec.meta == {'kind': 'random'}
 

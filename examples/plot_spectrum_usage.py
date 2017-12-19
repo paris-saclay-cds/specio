@@ -26,7 +26,7 @@ print(__doc__)
 # information:
 #
 # * a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
-#   (n_spectra, n_wavelength) ``spectrum``;
+#   (n_spectra, n_wavelength) ``amplitudes``;
 # * a 1D ndarray of shape (n_wavelength,) ``wavelength``;
 # * a dict ``meta``.
 #
