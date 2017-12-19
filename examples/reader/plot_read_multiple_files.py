@@ -7,6 +7,10 @@ This example shows how to read several SPC files which are located inside a
 folder.
 
 """
+
+# Authors: Guillaume Lemaitre <guillaume.lemaire@inria.fr>
+# License: BSD3
+
 from __future__ import print_function
 
 import os
@@ -15,6 +19,8 @@ import sys
 import matplotlib.pyplot as plt
 
 from specio import specread
+
+print(__doc__)
 
 # Get the path to the data relatively to this example
 DATA_PATH = os.path.dirname(sys.argv[0])

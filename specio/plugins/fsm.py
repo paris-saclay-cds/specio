@@ -184,6 +184,10 @@ class FSM(Format):
 
     This file format is used by Perkin Elmer Spotlight IR instrument.
 
+    Notes
+    -----
+    See :ref:`sphx_glr_auto_examples_reader_plot_read_fsm.py`.
+
     Examples
     --------
     >>> from specio import specread

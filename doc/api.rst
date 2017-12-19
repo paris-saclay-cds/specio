@@ -42,6 +42,27 @@ Classes
 
    specio.core.format.Reader
 
+Core data structure
+===================
+
+:func:`specio.specread` will return either a list of instances or an instance
+from the class :class:`specio.core.Spectrum`. This class is composed of three
+attributes:
+
+* a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
+  (n_spectra, n_wavelength) ``spectrum`` containing the counts/amplitude for
+  the different wavelengths;
+* a 1D ndarray of shape (n_wavelength,) ``wavelength`` containing the
+  wavelength for which the spectra have been acquired;
+* a dictionary ``meta`` containing the metadata.
+
+For more information, you can check the full API documentation above.
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   specio.core.Spectrum
 
 Example datasets
 ================
