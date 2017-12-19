@@ -154,10 +154,22 @@ def specread(uri, format=None, **kwargs):
 
     Returns
     -------
-    spectrum : specio.Spectrum or a list of specio.Spectrum
-        A :class:`specio.Spectrum` or a list of :class:`specio.Spectrum`
-        instance containing the spectra (``ndarray``), wavelength
-        (``ndarray``), and meta data (dict or list of ``dict``).
+    spectrum : specio.core.Spectrum or a list of specio.core.Spectrum
+        A :class:`specio.core.Spectrum` or a list of
+        :class:`specio.core.Spectrum`.
+        A :class:`specio.core.Spectrum` contains:
+            * a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
+              (n_spectra, n_wavelength) ``spectrum``;
+            * a 1D ndarray of shape (n_wavelength,) ``wavelength``;
+            * a dict ``meta``.
+
+    Notes
+    -----
+    See the following examples:
+
+        * :ref:`sphx_glr_auto_examples_reader_plot_read_spc.py`;
+        * :ref:`sphx_glr_auto_examples_reader_plot_read_fsm.py`;
+        * :ref:`sphx_glr_auto_examples_reader_plot_read_multiple_files.py`.
 
     """
     try:

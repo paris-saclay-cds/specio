@@ -14,8 +14,23 @@ http://imageio.github.io
 Contents:
 
 .. toctree::
-  :maxdepth: 2
+   :maxdepth: 2
+   :hidden:
+   :caption: Getting Started
 
-  sec_gettingstarted
-  sec_user
-  sec_dev
+   install
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Documentation
+
+   sec_user
+   sec_dev
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Gallery examples
+
+   auto_examples/index

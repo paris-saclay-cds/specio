@@ -57,9 +57,11 @@ class Dict(OrderedDict):
 class Spectrum(object):
     """Class containing the spectrum information.
 
+    This data structure is used and returned by :func:`specio.specread`.
+
     Parameters
     ----------
-    spectrum : ndarray, shape (n_spectra, n_wavelength)
+    spectrum : ndarray, shape (n_wavelength) or (n_spectra, n_wavelength)
         The spectrum read.
 
     wavelength : ndarray, shape (n_wavelength,)
@@ -67,6 +69,11 @@ class Spectrum(object):
 
     meta : dict
         The dictionary containing the meta data.
+
+    Notes
+    -----
+    See :ref:`sphx_glr_auto_examples_plot_spectrum_usage.py`.
+
     """
 
     @staticmethod

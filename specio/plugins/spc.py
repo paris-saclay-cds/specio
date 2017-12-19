@@ -33,6 +33,10 @@ class SPC(Format):
     (instrumental information, information on one spectrum of a dataset, the
     spectrum itself or extra logs).
 
+    Notes
+    -----
+    See :ref:`sphx_glr_auto_examples_reader_plot_read_spc.py`.
+
     Examples
     --------
     >>> from specio import specread
