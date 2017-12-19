@@ -47,6 +47,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',
               'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
               'sphinx_gallery.gen_gallery',
               'numpydoc',
               'sphinx_issues',
@@ -62,19 +63,21 @@ autosummary_generate = True
 
 autodoc_default_flags = ['members', 'inherited-members']
 
+# intersphinx configuration
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/{.major}'.format(
+        sys.version_info), None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'matplotlib': ('https://matplotlib.org/', None),
+}
+
+# sphinx-gallery configuration
 sphinx_gallery_conf = {
-    # path to your examples scripts
-    'examples_dirs': '../examples',
-    # path where to save gallery generated examples
-    'gallery_dirs': 'auto_examples',
-    # to make references clickable
     'doc_module': 'specio',
+    'backreferences_dir': os.path.join('generated'),
     'reference_url': {
-        'specio': None,
-        'matplotlib': 'http://matplotlib.org',
-        'numpy': 'http://docs.scipy.org/doc/numpy-1.11.0',
-        'scipy': 'http://docs.scipy.org/doc/scipy-0.18.0/reference'
-    }
+        'specio': None}
 }
 
 # Add any paths that contain templates here, relative to this directory.
