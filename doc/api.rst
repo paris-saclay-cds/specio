@@ -21,6 +21,9 @@ to read data and meta data in a more controlled manner.  This also allows
 specific scientific formats to be exposed in a way that best suits that
 file-format.
 
+Functions
+---------
+
 .. autosummary::
    :toctree: generated/
    :template: function.rst
@@ -29,6 +32,9 @@ file-format.
    specio.show_formats
    specio.specread
    specio.get_reader
+
+Classes
+-------
 
 .. autosummary::
    :toctree: generated/
