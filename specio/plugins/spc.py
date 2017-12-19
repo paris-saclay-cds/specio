@@ -11,7 +11,6 @@ import warnings
 from os.path import basename
 
 import numpy as np
-from six import string_types
 
 from .. import formats
 from ..core import Format
@@ -27,12 +26,12 @@ IGNORED_ATTRIBUTES = ('x', 'sub')
 class SPC(Format):
     """Plugin to read SPC file which store spectrostopic data.
 
-    The SPC file format is a file format in which all kinds of spectroscopic
-    data, including amongst others infrared spectra, Raman spectra and UV/VIS
-    spectra. The format can be regarded as a database with records of variable
-    length and each record stores a different kind of data (instrumental
-    information, information on one spectrum of a dataset, the spectrum itself
-    or extra logs).
+    The SPC file format [1]_ is a file format in which all kinds of
+    spectroscopic data, including amongst others infrared spectra, Raman
+    spectra and UV/VIS spectra. The format can be regarded as a database with
+    records of variable length and each record stores a different kind of data
+    (instrumental information, information on one spectrum of a dataset, the
+    spectrum itself or extra logs).
 
     Examples
     --------
