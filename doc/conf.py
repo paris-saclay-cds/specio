@@ -22,14 +22,11 @@ import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
 import sphinx_rtd_theme
+import specio
 
-try:
-    import gen_rst
-except:
-    pass
+from numpydoc.docscrape_sphinx import SphinxDocString
 
 sys.path.insert(0, os.path.abspath('sphinxext'))
-
 from github_link import make_linkcode_resolve
 
 # -- General configuration ------------------------------------------------
@@ -55,7 +52,6 @@ extensions = ['sphinx.ext.autodoc',
               'specio_ext']
 
 # Monkey-patch numpydoc to don't do the autosummary thing
-from numpydoc.docscrape_sphinx import SphinxDocString
 assert SphinxDocString._str_member_list
 SphinxDocString._str_member_list = lambda self, name: []
 
@@ -101,7 +97,6 @@ author = 'Guillaume Lemaitre'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-import specio
 # The short X.Y version.
 version = specio.__version__
 # The full version, including alpha/beta/rc tags.
@@ -211,7 +206,7 @@ texinfo_documents = [
 def generate_example_rst(app, what, name, obj, options, lines):
     # generate empty examples files, so that we don't get
     # inclusion errors if there are no examples for a class / module
-    examples_path = os.path.join(app.srcdir, "modules", "generated",
+    examples_path = os.path.join(app.srcdir, "generated",
                                  "%s.examples" % name)
     if not os.path.exists(examples_path):
         # touch file
@@ -228,8 +223,9 @@ issues_user_uri = 'https://github.com/{user}'
 def setup(app):
     app.connect('autodoc-process-docstring', generate_example_rst)
 
+
 # The following is used by sphinx.ext.linkcode to provide links to github
 linkcode_resolve = make_linkcode_resolve('specio',
-                                         u'https://github.com/paris-saclay-cds/'
-                                         'specio/blob/{revision}/'
+                                         u'https://github.com/paris-saclay'
+                                         '-cds/specio/blob/{revision}/'
                                          '{package}/{path}#L{lineno}')

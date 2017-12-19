@@ -26,7 +26,7 @@ class Format(object):
     ``print(format)`` or ``help(format)`` to see its documentation.
 
     To implement a specific format, one should create a subclass of ``Format``
-    and the ``Format.Reader class.
+    and the ``Format.Reader`` class.
 
     Parameters
     ----------
