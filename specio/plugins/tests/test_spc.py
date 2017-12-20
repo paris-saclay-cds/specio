@@ -9,29 +9,9 @@ from os.path import dirname, join
 import pytest
 
 from specio import specread
-from specio import formats
-from specio.core import Request
-from specio.datasets import load_spc_path
 
 
 DATA_PATH = dirname(__file__)
-
-
-def test_spc_format():
-    filename = load_spc_path()
-
-    R = Request(filename)
-    F = formats['SPC']
-    assert F.can_read(R)
-    reader = F.get_reader(R)
-    assert reader.get_length() == 1
-    assert reader.get_meta_data()['dat_fmt'] == 'x-y'
-    spec = reader.get_data()
-    assert spec.amplitudes.shape == (1911,)
-    assert spec.wavelength.shape == (1911,)
-    spec = reader.get_data(0)
-    assert spec.amplitudes.shape == (1911,)
-    assert spec.wavelength.shape == (1911,)
 
 
 @pytest.mark.parametrize(

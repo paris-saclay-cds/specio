@@ -283,7 +283,7 @@ class FSM(Format):
         def _open(self):
             self._fp = self.request.get_file()
             self._data = self._read_fsm(self._fp)
-            self._length = self._data.amplitudes.shape[0]
+            self._length = len(self._data)
 
         def _close(self):
             # Close the reader.
