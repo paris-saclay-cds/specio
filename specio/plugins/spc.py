@@ -131,19 +131,11 @@ class SPC(Format):
             # Open the reader
             self._fp = self.request.get_local_filename()
             self._data = self._spc_to_numpy(spc.File(self._fp), self._fp)
-            self._length = len(self._data)
 
         def _close(self):
             # Close the reader.
             # Note that the request object will close self._fp
             pass
-
-        def _get_length(self):
-            # Give the number of spectra
-            return self._length
-
-        def _get_meta_data(self, index):
-            return self._data.meta
 
 
 # Register. You register an *instance* of a Format class. Here specify:
