@@ -46,6 +46,7 @@ def test_get_reader(filename, format_spec, spectrum_shape, wavelength_shape,
     else:
         assert reader.get_length() == spectrum_shape[0]
     spec = reader.get_data()
+    assert reader.get_meta_data()['filename'] == basename(filename)
     assert spec.amplitudes.shape == spectrum_shape
     assert spec.wavelength.shape == wavelength_shape
     spec = reader.get_data(0)

@@ -269,9 +269,6 @@ class Format(object):
             """
             self._checkClosed()
             meta = self._get_meta_data(index)
-            if not isinstance(meta, dict):
-                raise ValueError('Meta data must be a dict, not %r' %
-                                 meta.__class__.__name__)
             return meta
 
         def iter_data(self):
@@ -421,7 +418,7 @@ class Format(object):
             if index is not None and isinstance(self._data.meta, Iterable):
                 return self._data.meta[index]
             else:
-                return self._data
+                return self._data.meta
 
 
 class FormatManager(object):
