@@ -342,7 +342,7 @@ class SP(Format):
                 content[start_byte:start_byte + n_bytes])
             start_byte += n_bytes
             NBP.append(start_byte + block_size)
-            while block_id != 122:
+            while block_id != 122 and start_byte < len(content) - 2:
                 next_block_id = content[start_byte:start_byte + 2]
                 if next_block_id[1] == 117:
                     start_byte = NBP[-1]
