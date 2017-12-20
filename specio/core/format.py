@@ -396,8 +396,8 @@ class Format(object):
 
             """
             if isinstance(self._data, Spectrum):
-                if index is not None and self._data.spectrum.ndim == 2:
-                    return Spectrum(self._data.spectrum[index],
+                if index is not None and self._data.amplitudes.ndim == 2:
+                    return Spectrum(self._data.amplitudes[index],
                                     self._data.wavelength,
                                     self._data.meta)
                 else:
