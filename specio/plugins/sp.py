@@ -10,7 +10,7 @@ import struct
 from os.path import basename
 
 import numpy as np
-from six import string_types
+from six import string_types, indexbytes
 
 from .. import formats
 from ..core import Format
@@ -344,7 +344,7 @@ class SP(Format):
             NBP.append(start_byte + block_size)
             while block_id != 122 and start_byte < len(content) - 2:
                 next_block_id = content[start_byte:start_byte + 2]
-                if next_block_id[1] == 117:
+                if indexbytes(next_block_id, 1) == 117:
                     start_byte = NBP[-1]
                     NBP = NBP[:-1]
                     while start_byte >= NBP[-1]:
