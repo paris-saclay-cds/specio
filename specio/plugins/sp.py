@@ -387,16 +387,9 @@ class SP(Format):
         def _open(self):
             self._fp = self.request.get_file()
             self._data = self._read_sp(self._fp)
-            self._length = len(self._data)
 
         def _close(self):
             pass
-
-        def _get_length(self):
-            return self._length
-
-        def _get_meta_data(self, index):
-            return self._data.meta
 
 
 format = SP('SP',

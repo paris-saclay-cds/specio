@@ -45,8 +45,6 @@ class MyFormat(Format):
         def _get_data(self, index):
             if self._failmode == 2:
                 raise IndexError()
-            elif self._failmode:
-                return 'not an array', {}
             else:
                 self._read_frames += 1
                 return Spectrum(np.ones((10, 10)) * index,
@@ -137,10 +135,6 @@ def test_reader():
     assert R.get_next_data().amplitudes[0, 0] == 1
     assert R.get_next_data().amplitudes[0, 0] == 2
     # Fail
-    R._failmode = 1
-    with pytest.raises(ValueError, message="Meta data be a dict"):
-        R.get_meta_data(0)
-
     R._failmode = 2
     with raises(IndexError):
         [spec for spec in R]

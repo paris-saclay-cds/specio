@@ -7,6 +7,7 @@
 from __future__ import print_function
 
 import os
+from collections import Iterable
 from warnings import warn
 from six import string_types
 
@@ -268,9 +269,6 @@ class Format(object):
             """
             self._checkClosed()
             meta = self._get_meta_data(index)
-            if not isinstance(meta, dict):
-                raise ValueError('Meta data must be a dict, not %r' %
-                                 meta.__class__.__name__)
             return meta
 
         def iter_data(self):
@@ -382,10 +380,11 @@ class Format(object):
             """Plugins must implement this.
 
             The returned scalar specifies the number of spectra in the series.
-            See Reader.get_length for more information.
+            See Reader.get_length for more information. By default, __len__()
+            of the Spectrum class is called.
 
             """
-            raise NotImplementedError()
+            return len(self._data)
 
         def _get_data(self, index=None):
             """Plugins can overwrite this, but may raise an IndexError in
@@ -416,7 +415,10 @@ class Format(object):
             given index, or to the file's (global) meta data if index is None.
 
             """
-            raise NotImplementedError()
+            if index is not None and isinstance(self._data.meta, Iterable):
+                return self._data.meta[index]
+            else:
+                return self._data.meta
 
 
 class FormatManager(object):
