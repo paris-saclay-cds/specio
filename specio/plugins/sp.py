@@ -288,7 +288,7 @@ class SP(Format):
     >>> spectra = specread(load_sp_path())
     >>> spectra.wavelength
     array([ 4000.,  3999.,  3998., ...,   702.,   701.,   700.])
-    >>> spectra.spectrum # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    >>> spectra.amplitudes # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
     array([ 0.03723936,  0.03718614,  0.03713289, ...,  0.00313506,
             0.00368404,  0.00417556])
 
@@ -387,7 +387,7 @@ class SP(Format):
         def _open(self):
             self._fp = self.request.get_file()
             self._data = self._read_sp(self._fp)
-            self._length = self._data.spectrum.shape[0]
+            self._length = self._data.amplitudes.shape[0]
 
         def _close(self):
             pass

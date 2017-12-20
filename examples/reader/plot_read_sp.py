@@ -28,5 +28,5 @@ spectra = specread(sp_filename)
 
 # Plot the first spectra
 plt.plot(spectra.wavelength,
-         spectra.spectrum)
+         spectra.amplitudes)
 plt.show()
