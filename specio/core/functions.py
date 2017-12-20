@@ -139,10 +139,10 @@ def specread(uri, format=None, **kwargs):
     uri : {str, list of str, file}
         The resource to load the spectrum from. The input accepted are:
 
-            * a filename or a list of filename of spectrum;
-            * a filename or a list of filename containing a wildcard
-              (e.g. ``'./data/*.spc'``);
-            * a file object.
+        * a filename or a list of filename of spectrum;
+        * a filename or a list of filename containing a wildcard
+          (e.g. ``'./data/*.spc'``);
+        * a file object.
 
     format : str
         The format to use to read the file. By default specio selects
@@ -158,18 +158,11 @@ def specread(uri, format=None, **kwargs):
         A :class:`specio.core.Spectrum` or a list of
         :class:`specio.core.Spectrum`.
         A :class:`specio.core.Spectrum` contains:
-            * a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
-              (n_spectra, n_wavelength) ``amplitudes``;
-            * a 1D ndarray of shape (n_wavelength,) ``wavelength``;
-            * a dict ``meta``.
 
-    Notes
-    -----
-    See the following examples:
-
-        * :ref:`sphx_glr_auto_examples_reader_plot_read_spc.py`;
-        * :ref:`sphx_glr_auto_examples_reader_plot_read_fsm.py`;
-        * :ref:`sphx_glr_auto_examples_reader_plot_read_multiple_files.py`.
+        * a 1D ndarray of shape (n_wavelength,) or 2D ndarray of shape
+          (n_spectra, n_wavelength) ``amplitudes``;
+        * a 1D ndarray of shape (n_wavelength,) ``wavelength``;
+        * a dict ``meta``.
 
     """
     try:

@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, print_function, division
 
+import struct
 from os.path import basename
 
 import numpy as np
@@ -14,8 +15,6 @@ from six import string_types
 from .. import formats
 from ..core import Format
 from ..core.util import Spectrum
-
-import struct
 
 
 def _block_info(data):
@@ -51,7 +50,7 @@ def _decode_5100(data):
     Parameters
     ----------
     data : bytes
-        The 5100 black to decode.
+        The 5100 block to decode.
 
     Returns
     -------
@@ -99,7 +98,7 @@ def _decode_5104(data):
     Parameters
     ----------
     data : bytes
-        The 5104 black to decode.
+        The 5104 block to decode.
 
     Returns
     -------
