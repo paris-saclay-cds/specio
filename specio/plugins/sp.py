@@ -42,6 +42,156 @@ def _block_info(data):
     return struct.unpack('<Hi', data)
 
 
+def _decode_5104(data):
+    """Read the block of data with ID 5104.
+
+    Parameters
+    ----------
+    data : bytes
+        The 5104 black to decode.
+
+    Returns
+    -------
+    meta : dict
+        The extracted information.
+
+    """
+
+    text = []
+    start_byte = 0
+    while start_byte + 2 < len(data):
+        tag = data[start_byte:start_byte + 2]
+        if tag == b'#u':
+            start_byte += 2
+            text_size = struct.unpack(
+                '<h', data[start_byte:start_byte + 2])[0]
+            start_byte += 2
+            text.append(data[start_byte:start_byte + text_size].decode('utf8'))
+            start_byte += text_size
+            start_byte += 6
+        elif tag == b'$u':
+            start_byte += 2
+            text.append(struct.unpack(
+                '<h', data[start_byte:start_byte + 2])[0])
+            start_byte += 2
+            start_byte += 6
+        elif tag == b',u':
+            start_byte += 2
+            text.append(struct.unpack(
+                '<h', data[start_byte:start_byte + 2])[0])
+            start_byte += 2
+        else:
+            start_byte += 1
+
+    return {'analyst': text[0],
+            'date': text[2],
+            'image_name': text[4],
+            'instrument_model': text[5],
+            'instrument_serial_number': text[6],
+            'instrument_software_version': text[7],
+            'accumulations': text[9],
+            'detector': text[11],
+            'source': text[12],
+            'beam_splitter': text[13],
+            'apodization': text[15],
+            'spectrum_type': text[16],
+            'beam_type': text[17],
+            'phase_correction': text[20],
+            'ir_accessory': text[26],
+            'igram_type': text[28],
+            'scan_direction': text[29],
+            'background_scans': text[32]}
+
+
+def _decode_25739(data):
+    start_byte = 0
+    n_bytes = 2
+    var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
+    if var_id == 29987:
+        start_byte += n_bytes
+        n_bytes = 2
+        var_size = struct.unpack('<H', data[start_byte:
+                                            start_byte + n_bytes])[0]
+        start_byte += n_bytes
+        n_bytes = var_size
+        return {'file_path': data[start_byte:
+                                  start_byte + n_bytes].decode('utf-8')}
+
+
+def _decode_35698(data):
+    start_byte = 0
+    n_bytes = 2
+    var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
+    if var_id == 29981:
+        start_byte += n_bytes
+        n_bytes = 16
+        min_wavelength, max_wavelength = struct.unpack(
+            '<dd', data[start_byte:start_byte + n_bytes])
+    return {'min_wavelength': min_wavelength,
+            'max_wavelength': max_wavelength}
+
+
+def _decode_35699(data):
+    start_byte = 0
+    n_bytes = 2
+    var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
+    if var_id == 29981:
+        start_byte += n_bytes
+        n_bytes = 16
+        min_absolute, max_absolute = struct.unpack(
+            '<dd', data[start_byte:start_byte + n_bytes])
+    return {'min_absolute': min_absolute,
+            'max_absolute': max_absolute}
+
+
+def _decode_35700(data):
+    start_byte = 0
+    n_bytes = 2
+    var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
+    if var_id == 29979:
+        start_byte += n_bytes
+        n_bytes = 8
+        wavelength_step = struct.unpack(
+            '<d', data[start_byte:start_byte + n_bytes])[0]
+    return {'wavelength_step': wavelength_step}
+
+
+def _decode_35701(data):
+    start_byte = 0
+    n_bytes = 2
+    var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
+    if var_id == 29995:
+        start_byte += n_bytes
+        n_bytes = 4
+        n_points = struct.unpack(
+            '<I', data[start_byte:start_byte + n_bytes])[0]
+    return {'n_points': n_points}
+
+
+def _decode_35708(data):
+    start_byte = 0
+    n_bytes = 2
+    var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
+    if var_id == 29974:
+        start_byte += n_bytes
+        n_bytes = 4
+        var_size = struct.unpack('<I', data[start_byte:
+                                            start_byte + n_bytes])[0]
+        start_byte += n_bytes
+        n_bytes = var_size
+
+        return np.frombuffer(data[start_byte:start_byte + n_bytes],
+                             dtype=np.float64)
+
+
+FUNC_DECODE = {25739: _decode_25739,
+               35698: _decode_35698,
+               35699: _decode_35699,
+               35700: _decode_35700,
+               35701: _decode_35701,
+               35708: _decode_35708}
+
+
 class SP(Format):
     """Plugin to read SP file which stores IR spectroscopic data.
 
@@ -103,25 +253,45 @@ class SP(Format):
             n_bytes = 6
             block_id, block_size = _block_info(
                 content[start_byte:start_byte + n_bytes])
-            NBP.append(start_byte + n_bytes + block_size)
             start_byte += n_bytes
+            NBP.append(start_byte + block_size)
             while block_id != 122:
-                n_bytes = 4
-                block_id = struct.unpack('<HH', content[start_byte:
-                                                        start_byte + n_bytes])
-                if block_id[1] == 'u':
-                    print('HERE')
+                next_block_id = content[start_byte:start_byte + 2]
+                if next_block_id[1] == 117:
                     start_byte = NBP[-1]
                     NBP = NBP[:-1]
                     while start_byte >= NBP[-1]:
                         NBP = NBP[-1]
                 else:
-                    n_bytes = 6
                     block_id, block_size = _block_info(
                         content[start_byte:start_byte + n_bytes])
-                    NBP.append(start_byte + n_bytes + block_size)
                     start_byte += n_bytes
+                    NBP.append(start_byte + block_size)
 
+            meta = _decode_5104(content[start_byte:start_byte + block_size])
+
+            start_byte = NBP[1]
+            while start_byte < len(content):
+                n_bytes = 6
+                block_id, block_size = _block_info(
+                    content[start_byte:start_byte + n_bytes])
+                start_byte += n_bytes
+                if block_id in FUNC_DECODE.keys():
+                    decoded_data = FUNC_DECODE[block_id](
+                        content[start_byte:start_byte + block_size])
+                    if isinstance(decoded_data, dict):
+                        meta.update(decoded_data)
+                    else:
+                        spectrum = decoded_data
+                start_byte += block_size
+
+            wavelength = np.linspace(meta['min_wavelength'],
+                                     meta['max_wavelength'],
+                                     meta['n_points'])
+
+            if meta['wavelength_step'] < 0:
+                spectrum = spectrum[::-1]
+                wavelength = wavelength[::-1]
 
             return Spectrum(spectrum, wavelength, meta)
 
