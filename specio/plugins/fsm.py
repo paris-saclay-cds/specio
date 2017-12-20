@@ -50,7 +50,7 @@ def _decode_5100(data):
     Parameters
     ----------
     data : bytes
-        The 5100 black to decode.
+        The 5100 block to decode.
 
     Returns
     -------
@@ -98,7 +98,7 @@ def _decode_5104(data):
     Parameters
     ----------
     data : bytes
-        The 5104 black to decode.
+        The 5104 block to decode.
 
     Returns
     -------

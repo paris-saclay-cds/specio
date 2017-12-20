@@ -7,8 +7,10 @@
 from __future__ import absolute_import, print_function, division
 
 import struct
+from os.path import basename
 
 import numpy as np
+from six import string_types
 
 from .. import formats
 from ..core import Format
@@ -48,7 +50,7 @@ def _decode_5104(data):
     Parameters
     ----------
     data : bytes
-        The 5104 black to decode.
+        The 5104 block to decode.
 
     Returns
     -------
@@ -104,6 +106,19 @@ def _decode_5104(data):
 
 
 def _decode_25739(data):
+    """Read the block of data with ID 25739.
+
+    Parameters
+    ----------
+    data : bytes
+        The 25739 block to decode.
+
+    Returns
+    -------
+    meta : dict
+        The extracted information.
+
+    """
     start_byte = 0
     n_bytes = 2
     var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
@@ -119,6 +134,19 @@ def _decode_25739(data):
 
 
 def _decode_35698(data):
+    """Read the block of data with ID 35698.
+
+    Parameters
+    ----------
+    data : bytes
+        The 35698 block to decode.
+
+    Returns
+    -------
+    meta : dict
+        The extracted information.
+
+    """
     start_byte = 0
     n_bytes = 2
     var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
@@ -132,6 +160,19 @@ def _decode_35698(data):
 
 
 def _decode_35699(data):
+    """Read the block of data with ID 35699.
+
+    Parameters
+    ----------
+    data : bytes
+        The 35699 block to decode.
+
+    Returns
+    -------
+    meta : dict
+        The extracted information.
+
+    """
     start_byte = 0
     n_bytes = 2
     var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
@@ -145,6 +186,19 @@ def _decode_35699(data):
 
 
 def _decode_35700(data):
+    """Read the block of data with ID 35700.
+
+    Parameters
+    ----------
+    data : bytes
+        The 35700 block to decode.
+
+    Returns
+    -------
+    meta : dict
+        The extracted information.
+
+    """
     start_byte = 0
     n_bytes = 2
     var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
@@ -157,6 +211,19 @@ def _decode_35700(data):
 
 
 def _decode_35701(data):
+    """Read the block of data with ID 35701.
+
+    Parameters
+    ----------
+    data : bytes
+        The 35701 block to decode.
+
+    Returns
+    -------
+    meta : dict
+        The extracted information.
+
+    """
     start_byte = 0
     n_bytes = 2
     var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
@@ -169,6 +236,19 @@ def _decode_35701(data):
 
 
 def _decode_35708(data):
+    """Read the block of data with ID 35708.
+
+    Parameters
+    ----------
+    data : bytes
+        The 35708 block to decode.
+
+    Returns
+    -------
+    data : ndarray
+        The extracted data.
+
+    """
     start_byte = 0
     n_bytes = 2
     var_id = struct.unpack('<H', data[start_byte:start_byte + n_bytes])[0]
@@ -197,19 +277,26 @@ class SP(Format):
 
     The file format is used by Perkin Elmer IR instrument.
 
-    Parameters
-    ----------
-    Specify arguments in numpy doc style here.
+    Notes
+    -----
+    See :ref:`sphx_glr_auto_examples_reader_plot_read_sp.py`.
 
-    Attributes
-    ----------
-    Specify the specific attributes that can be useful.
+    Examples
+    --------
+    >>> from specio import specread
+    >>> from specio.datasets import load_sp_path
+    >>> spectra = specread(load_sp_path())
+    >>> spectra.wavelength
+    array([ 4000.,  3999.,  3998., ...,   702.,   701.,   700.])
+    >>> spectra.spectrum # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    array([ 0.03723936,  0.03718614,  0.03713289, ...,  0.00313506,
+            0.00368404,  0.00417556])
 
     """
 
     def _can_read(self, request):
         if request.filename.lower().endswith(self.extensions):
-            # the 4 first bytes of a fsm file corresponds to PEPE
+            # the 4 first bytes of a sp file corresponds to PEPE
             if request.firstbytes[:4] == b'PEPE':
                 return True
         return False
@@ -268,7 +355,8 @@ class SP(Format):
                     start_byte += n_bytes
                     NBP.append(start_byte + block_size)
 
-            meta = _decode_5104(content[start_byte:start_byte + block_size])
+            meta.update(_decode_5104(
+                content[start_byte:start_byte + block_size]))
 
             start_byte = NBP[1]
             while start_byte < len(content):
@@ -289,9 +377,10 @@ class SP(Format):
                                      meta['max_wavelength'],
                                      meta['n_points'])
 
-            if meta['wavelength_step'] < 0:
-                spectrum = spectrum[::-1]
-                wavelength = wavelength[::-1]
+            if isinstance(sp_file, string_types):
+                meta['filename'] = basename(sp_file)
+            else:
+                meta['filename'] = basename(sp_file.name)
 
             return Spectrum(spectrum, wavelength, meta)
 
@@ -307,7 +396,7 @@ class SP(Format):
             return self._length
 
         def _get_meta_data(self, index):
-            self._data.meta
+            return self._data.meta
 
 
 format = SP('SP',

@@ -163,14 +163,6 @@ def specread(uri, format=None, **kwargs):
             * a 1D ndarray of shape (n_wavelength,) ``wavelength``;
             * a dict ``meta``.
 
-    Notes
-    -----
-    See the following examples:
-
-        * :ref:`sphx_glr_auto_examples_reader_plot_read_spc.py`;
-        * :ref:`sphx_glr_auto_examples_reader_plot_read_fsm.py`;
-        * :ref:`sphx_glr_auto_examples_reader_plot_read_multiple_files.py`.
-
     """
     try:
         filenames = _validate_filenames(uri)
