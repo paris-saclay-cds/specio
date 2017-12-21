@@ -120,6 +120,23 @@ def _get_reader_get_data(uri, format, **kwargs):
 
 
 def _validate_filenames(uri):
+    """Check the filenames and expand in the case of wildcard.
+
+    Parameters
+    ----------
+    uri : {str, list of str, file}
+        The resource to load the spectrum from. The input accepted are:
+
+        * a filename or a list of filename of spectrum;
+        * a filename or a list of filename containing a wildcard
+          (e.g. ``'./data/*.spc'``).
+
+    Returns
+    -------
+    filenames : list of str
+        Returns a list of all file names.
+
+    """
     if isinstance(uri, list):
         return chain.from_iterable([sorted(glob.glob(os.path.expanduser(f)))
                                     for f in uri])
@@ -128,6 +145,19 @@ def _validate_filenames(uri):
 
 
 def _zip_spectrum(spectrum):
+    """Compress if possible several Spectrum into a single one.
+
+    Parameters
+    ----------
+    spectrum : list of Spectrum
+        The list of Spectrum to zip.
+
+    Returns
+    -------
+    zipped_spectrum : Spectrum or list of Spectrum
+        The zipped spectra(um) if it was possible to zip them.
+
+    """
     all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
 
     if all_spectrum:
