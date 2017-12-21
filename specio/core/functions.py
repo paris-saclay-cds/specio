@@ -120,11 +120,78 @@ def _get_reader_get_data(uri, format, **kwargs):
 
 
 def _validate_filenames(uri):
+    """Check the filenames and expand in the case of wildcard.
+
+    Parameters
+    ----------
+    uri : {str, list of str, file}
+        The resource to load the spectrum from. The input accepted are:
+
+        * a filename or a list of filename of spectrum;
+        * a filename or a list of filename containing a wildcard
+          (e.g. ``'./data/*.spc'``).
+
+    Returns
+    -------
+    filenames : list of str
+        Returns a list of all file names.
+
+    """
     if isinstance(uri, list):
         return chain.from_iterable([sorted(glob.glob(os.path.expanduser(f)))
                                     for f in uri])
     else:
         return sorted(glob.glob(os.path.expanduser(uri)))
+
+
+def _zip_spectrum(spectrum):
+    """Compress if possible several Spectrum into a single one.
+
+    Parameters
+    ----------
+    spectrum : list of Spectrum
+        The list of Spectrum to zip.
+
+    Returns
+    -------
+    zipped_spectrum : Spectrum or list of Spectrum
+        The zipped spectra(um) if it was possible to zip them.
+
+    """
+    all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
+
+    if all_spectrum:
+        # check that the wavelength of the different spectrum are the
+        # same and concatenate all spectrum in a single data structure
+        wavelength = spectrum[0].wavelength
+        try:
+            consistent_wavelength = [np.allclose(sp.wavelength,
+                                                 wavelength)
+                                     for sp in spectrum]
+            if not all(consistent_wavelength):
+                return spectrum
+
+        except ValueError:
+            # the above comparison will fail when two arrays have
+            # different sizes
+            return spectrum
+
+        else:
+            spectrum_2d, meta_2d = zip(*[(sp.amplitudes, sp.meta)
+                                         for sp in spectrum])
+            return Spectrum(np.vstack(spectrum_2d),
+                            wavelength,
+                            meta_2d)
+
+    else:
+        # chain the spectrum into a single list
+        output_spectrum = []
+        for sp in spectrum:
+            if isinstance(sp, list):
+                output_spectrum += sp
+            else:
+                output_spectrum.append(sp)
+        return output_spectrum
 
 
 def specread(uri, format=None, **kwargs):
@@ -165,48 +232,18 @@ def specread(uri, format=None, **kwargs):
         * a dict ``meta``.
 
     """
-    try:
-        filenames = _validate_filenames(uri)
-        if len(filenames) > 1:
-            spectrum = [_get_reader_get_data(f, format, **kwargs)
-                        for f in filenames]
-            all_spectrum = all([isinstance(sp, Spectrum) for sp in spectrum])
+    # try:
+    filenames = _validate_filenames(uri)
+    if len(filenames) > 1:
+        spectrum = [_get_reader_get_data(f, format, **kwargs)
+                    for f in filenames]
+    else:
+        spectrum = _get_reader_get_data(uri, format, **kwargs)
 
-            if all_spectrum:
-                # check that the wavelength of the different spectrum are the
-                # same and concatenate all spectrum in a single data structure
-                wavelength = spectrum[0].wavelength
-                try:
-                    consistent_wavelength = [np.allclose(sp.wavelength,
-                                                         wavelength)
-                                             for sp in spectrum]
-                    if not all(consistent_wavelength):
-                        return spectrum
+    if isinstance(spectrum, list):
+        spectrum = _zip_spectrum(spectrum)
 
-                except ValueError:
-                    # the above comparison will fail when two arrays have
-                    # different sizes
-                    return spectrum
+    return spectrum
 
-                else:
-                    spectrum_2d, meta_2d = zip(*[(sp.amplitudes, sp.meta)
-                                                 for sp in spectrum])
-                    return Spectrum(np.vstack(spectrum_2d),
-                                    wavelength,
-                                    meta_2d)
-
-            else:
-                # chain the spectrum into a single list
-                output_spectrum = []
-                for sp in spectrum:
-                    if isinstance(sp, list):
-                        output_spectrum += sp
-                    else:
-                        output_spectrum.append(sp)
-                return output_spectrum
-
-        else:
-            return _get_reader_get_data(filenames[0], format, **kwargs)
-
-    except Exception:
-        return _get_reader_get_data(uri, format, **kwargs)
+    # except Exception:
+    #     return _get_reader_get_data(uri, format, **kwargs)
