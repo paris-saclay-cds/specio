@@ -15,13 +15,11 @@ from specio.core import Spectrum
 from specio.datasets import load_fsm_path
 from specio.datasets import load_spc_path
 from specio.datasets import load_sp_path
-from specio.datasets import load_mzml_path
 
 
 @pytest.mark.parametrize(
     "filename,spectrum_shape,wavelength_shape",
     [(load_fsm_path(), (7998, 1641), (1641,)),
-     (load_mzml_path(), (531,), (531,)),
      (load_spc_path(), (1911,), (1911,)),
      (load_sp_path(), (3301,), (3301,))])
 def test_specread(filename, spectrum_shape, wavelength_shape):
@@ -35,7 +33,6 @@ def test_specread(filename, spectrum_shape, wavelength_shape):
 @pytest.mark.parametrize(
     "filename,format_spec,spectrum_shape,wavelength_shape,first_value",
     [(load_fsm_path(), "FSM", (7998, 1641), (1641,), 38.656551),
-     (load_mzml_path(), "MZML", (531,), (531,), None),
      (load_spc_path(), "SPC", (1911,), (1911,), 1487.0),
      (load_sp_path(), "SP", (3301,), (3301,), 0.03723936007346753)])
 def test_get_reader(filename, format_spec, spectrum_shape, wavelength_shape,
