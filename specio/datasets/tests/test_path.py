@@ -15,7 +15,7 @@ from specio.datasets import load_spc_path
 @pytest.mark.parametrize(
     "path_data,extension",
     [(load_fsm_path(), 'fsm'),
-     (load_mzml_path(), 'mzml')
+     (load_mzml_path(), 'mzml'),
      (load_sp_path(), 'sp'),
      (load_spc_path(), 'spc')])
 def test_load_spectra_path(path_data, extension):
