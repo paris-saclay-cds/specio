@@ -4,6 +4,8 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
+import os
+
 import pytest
 
 from specio.datasets import load_fsm_path
@@ -19,4 +21,4 @@ from specio.datasets import load_spc_path
      (load_sp_path(), 'sp'),
      (load_spc_path(), 'spc')])
 def test_load_spectra_path(path_data, extension):
-    assert 'datasets/data/spectra.' + extension in path_data
+    assert os.path.join('datasets', 'data', 'spectra' + extension) in path_data
