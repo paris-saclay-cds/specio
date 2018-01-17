@@ -21,4 +21,4 @@ from specio.datasets import load_spc_path
      (load_sp_path(), 'sp'),
      (load_spc_path(), 'spc')])
 def test_load_spectra_path(path_data, extension):
-    assert os.path.join('datasets', 'data', 'spectra' + extension) in path_data
+    assert os.path.join('datasets', 'data', 'spectra.' + extension) in path_data
