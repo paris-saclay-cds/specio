@@ -62,6 +62,12 @@ EXTRAS_REQUIRE = {
     ]
 }
 
+ENTRY_POINTS = {
+    'console_scripts': [
+        'specio=specio.cli:main']
+}
+
+
 opts = dict(name=NAME,
             maintainer=MAINTAINER,
             maintainer_email=MAINTAINER_EMAIL,
@@ -78,7 +84,8 @@ opts = dict(name=NAME,
             packages=PACKAGES,
             data_files=DATA_FILES,
             include_package_data=True,
-            extras_require=EXTRAS_REQUIRE)
+            extras_require=EXTRAS_REQUIRE,
+            entry_points=ENTRY_POINTS)
 
 
 if __name__ == '__main__':
