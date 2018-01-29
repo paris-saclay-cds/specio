@@ -19,12 +19,17 @@ from specio.datasets import load_sp_path
 from specio.datasets import load_mzml_path
 
 
+skip_windows_py27 = pytest.mark.skipif(
+    (sys.platform == 'win32') and (sys.version_info < (3, 5)),
+    reason="OpenMS not avaialble")
+
+
 @pytest.mark.parametrize(
     "filename,spectrum_shape,wavelength_shape",
     [(load_fsm_path(), (7998, 1641), (1641,)),
      (load_spc_path(), (1911,), (1911,)),
      (load_sp_path(), (3301,), (3301,)),
-     (load_mzml_path(), (282,), (282,))])
+     pytest.param(load_mzml_path(), (282,), (282,), marks=skip_windows_py27)])
 def test_specread(filename, spectrum_shape, wavelength_shape):
     spec = specread(filename)
     if isinstance(spec, Spectrum):
@@ -51,8 +56,7 @@ def test_specread(filename, spectrum_shape, wavelength_shape):
      (load_sp_path(), "SP", 1, (3301,), (3301,), 0.03723936007346753),
      pytest.param(
          load_mzml_path(), "MZML", 531, (282,), (282,), 37.384331,
-         marks=pytest.mark.skipif(sys.version_info < (3, 5),
-                                  reason="OpenMS not avaialble"))])
+         marks=skip_windows_py27)])
 def test_get_reader(filename, format_spec, len_spectrum, spectrum_shape,
                     wavelength_shape, first_value):
     R = Request(filename)
