@@ -19,9 +19,10 @@ from specio.datasets import load_sp_path
 from specio.datasets import load_mzml_path
 
 
-skip_windows_py27 = lambda x: pytest.mark.skipif(
-    (sys.platform == 'win32') and (sys.version_info < (3, 5)),
-    reason="OpenMS not avaialble")
+def skip_windows_py27():
+    return pytest.mark.skipif(
+        (sys.platform == 'win32') and (sys.version_info < (3, 5)),
+        reason="OpenMS not avaialble")
 
 
 @pytest.mark.parametrize(
