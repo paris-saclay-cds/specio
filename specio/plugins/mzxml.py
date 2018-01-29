@@ -8,8 +8,6 @@ from __future__ import absolute_import, print_function, division
 
 from os.path import basename
 
-from pyopenms import MzXMLFile, MSExperiment
-
 from .. import formats
 from ..core import Format
 from ..core.util import Spectrum
@@ -49,6 +47,7 @@ class MZXML(Format):
                 return None
 
         def _read_mzxml(self, mzxml_filename):
+            from pyopenms import MzXMLFile, MSExperiment
             file_handler = MzXMLFile()
             experiment = MSExperiment()
             file_handler.load(mzxml_filename, experiment)

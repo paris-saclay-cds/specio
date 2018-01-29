@@ -15,6 +15,9 @@ from specio.core import Spectrum
 from specio.datasets import load_mzml_path
 
 
+pytest.importorskip("pyopenms")
+
+
 def test_specread_mzml():
     filename = load_mzml_path()
     spec = specread(filename)
