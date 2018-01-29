@@ -36,6 +36,7 @@ pip install codecov
 
 # install spc dependency from master
 pip install git+https://github.com/glemaitre/spc.git
+pip install pyopenms
 
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"
