@@ -61,7 +61,7 @@ def test_spectrum_to_csv():
         spec.to_csv(filename)
         df = pd.read_csv(filename, index_col=0)
         df.columns = df.columns.astype(float)
-        assert_frame_equal(df, spec.to_dataframe())
+        assert_frame_equal(df, spec.to_dataframe(), check_exact=False)
     finally:
         rmtree(tmp_dir)
 
