@@ -138,8 +138,8 @@ def _validate_filenames(uri):
 
     """
     if isinstance(uri, list):
-        return chain.from_iterable([sorted(glob.glob(os.path.expanduser(f)))
-                                    for f in uri])
+        return list(chain.from_iterable(
+            [sorted(glob.glob(os.path.expanduser(f))) for f in uri]))
     else:
         return sorted(glob.glob(os.path.expanduser(uri)))
 
@@ -232,18 +232,18 @@ def specread(uri, format=None, **kwargs):
         * a dict ``meta``.
 
     """
-    # try:
-    filenames = _validate_filenames(uri)
-    if len(filenames) > 1:
-        spectrum = [_get_reader_get_data(f, format, **kwargs)
-                    for f in filenames]
-    else:
-        spectrum = _get_reader_get_data(uri, format, **kwargs)
+    try:
+        filenames = _validate_filenames(uri)
+        if len(filenames) > 1:
+            spectrum = [_get_reader_get_data(f, format, **kwargs)
+                        for f in filenames]
+        else:
+            spectrum = _get_reader_get_data(uri, format, **kwargs)
 
-    if isinstance(spectrum, list):
-        spectrum = _zip_spectrum(spectrum)
+        if isinstance(spectrum, list):
+            spectrum = _zip_spectrum(spectrum)
 
-    return spectrum
+        return spectrum
 
-    # except Exception:
-    #     return _get_reader_get_data(uri, format, **kwargs)
+    except Exception:
+        return _get_reader_get_data(uri, format, **kwargs)
