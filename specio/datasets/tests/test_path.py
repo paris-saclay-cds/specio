@@ -4,7 +4,7 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
-import os.path import join
+from os.path import join
 
 import pytest
 
