@@ -4,7 +4,7 @@
 # Authors: Guillaume Lemaitre <guillaume.lemaitre@inria.fr>
 # License: BSD 3 clause
 
-import os
+import os.path import join
 
 import pytest
 
@@ -23,4 +23,4 @@ from specio.datasets import load_csv_path
      (load_spc_path(), 'spc'),
      (load_csv_path(), 'csv')])
 def test_load_spectra_path(path_data, extension):
-    assert os.path.join('datasets', 'data', 'spectra.' + extension) in path_data
+    assert join('datasets', 'data', 'spectra.' + extension) in path_data
