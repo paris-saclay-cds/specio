@@ -41,7 +41,6 @@ Classes
    :template: class.rst
 
    specio.core.format.Reader
-   specio.core.Spectrum
 
 Core data structure
 ===================
