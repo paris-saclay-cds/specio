@@ -13,7 +13,7 @@ from ..core.util import Spectrum
 
 class CSV(Format):
     """Plugin to read CSV file which is the format exported using
-    :class:`specio.core.Spectrum`.
+    :func:`specio.core.Spectrum.to_csv`.
 
     The CSV format is the Comma-Separated Values format [1]_.
 
@@ -84,6 +84,6 @@ class CSV(Format):
 
 # Register. You register an *instance* of a Format class. Here specify:
 format = CSV('CSV',
-             'Comma-Separated Values format',
+             'Internal Comma-Separated Values format',
              '.csv')
 formats.add_format(format)
