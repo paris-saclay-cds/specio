@@ -104,12 +104,14 @@ class Spectrum(object):
         self.meta = meta if meta is not None else {}
 
     def to_dataframe(self):
-        """Export to the Spectrum to a pandas DataFrame.
+        """Export the Spectrum to a pandas DataFrame.
 
         Returns
         -------
         df_spectrum : DataFrame,
-            A pandas DataFrame containing the information from a Spectrum.
+            A pandas DataFrame containing the information from a Spectrum. The
+            index corresponds to the filename and the columns corresponds to
+            the wavelengths.
 
         """
         import pandas as pd

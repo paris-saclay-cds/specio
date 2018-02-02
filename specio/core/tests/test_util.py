@@ -15,12 +15,13 @@ import pandas as pd
 
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_equal
-from pandas.testing import assert_frame_equal
-from pandas.testing import assert_index_equal
 
 from specio import specread
 from specio.datasets import load_spc_path
 from specio.core.util import Spectrum, Dict
+
+
+module_path = os.path.dirname(__file__)
 
 
 @pytest.mark.parametrize(
@@ -45,16 +46,28 @@ def test_spectrum(spectrum, wavelength, metadata):
     assert spec.meta == {'kind': 'random'}
 
 
-def test_spectrum_to_dataframe():
-    spec = specread(load_spc_path())
+@pytest.mark.parametrize(
+    "filename",
+    [(os.path.join(module_path, 'data', '*.spc')),
+     (load_spc_path())])
+def test_spectrum_to_dataframe(filename):
+    spec = specread(filename)
     df_spec = spec.to_dataframe()
-    assert_array_equal(df_spec.index.values, np.array(spec.meta['filename']))
+    if isinstance(spec.meta, tuple):
+        expected_index = np.array([meta['filename'] for meta in spec.meta])
+    else:
+        expected_index = np.array(spec.meta['filename'])
+    assert_array_equal(df_spec.index.values, expected_index)
     assert_allclose(df_spec.columns.values, spec.wavelength)
     assert_allclose(df_spec.values, np.atleast_2d(spec.amplitudes))
 
 
-def test_spectrum_to_csv():
-    spec = specread(load_spc_path())
+@pytest.mark.parametrize(
+    "filename",
+    [(os.path.join(module_path, 'data', '*.spc')),
+     (load_spc_path())])
+def test_spectrum_to_csv(filename):
+    spec = specread(filename)
     tmp_dir = mkdtemp()
     filename = os.path.join(tmp_dir, 'spectra.csv')
 
