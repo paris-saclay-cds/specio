@@ -16,6 +16,7 @@ import pandas as pd
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_equal
 from pandas.testing import assert_frame_equal
+from pandas.testing import assert_index_equal
 
 from specio import specread
 from specio.datasets import load_spc_path
@@ -61,9 +62,9 @@ def test_spectrum_to_csv():
         spec.to_csv(filename)
         df = pd.read_csv(filename, index_col=0)
         df.columns = df.columns.astype(float)
-        assert_frame_equal(df, spec.to_dataframe(),
-                           check_exact=False,
-                           check_less_precise=True)
+        assert_allclose(df.values, spec.to_dataframe().values)
+        assert_allclose(df.columns.values, spec.to_dataframe().columns.values)
+        assert_array_equal(df.index.values, spec.to_dataframe().index.values)
     finally:
         rmtree(tmp_dir)
 
