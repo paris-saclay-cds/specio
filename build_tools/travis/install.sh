@@ -31,7 +31,7 @@ conda update --yes conda
 # provided versions
 conda create -n testenv --yes python=$PYTHON_VERSION pip
 source activate testenv
-conda install --yes numpy six pytest pytest-cov pytest-mock
+conda install --yes numpy pandas six pytest pytest-cov pytest-mock
 pip install codecov
 
 # install spc dependency from master

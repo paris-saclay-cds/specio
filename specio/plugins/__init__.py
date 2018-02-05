@@ -63,6 +63,7 @@ For the Format.Reader class:
 
 """
 
+from . import csv
 from . import example
 from . import fsm
 from . import mzml
