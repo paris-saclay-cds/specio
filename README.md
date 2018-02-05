@@ -9,3 +9,21 @@
 `specio` is a library which allows to easily open spectroscopic format
 currently available. It is widely inspired by
 the [`imageio`](https://github.com/imageio/imageio) architecture.
+
+## Dependencies
+
+### Mandatory dependencies
+
+* numpy
+* six
+
+### Optional dependencies
+
+#### Export
+
+* pandas
+
+#### Reader
+
+* spc
+* pyopenms

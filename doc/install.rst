@@ -2,11 +2,31 @@
 Install and contribute
 ######################
 
+Dependencies
+============
+
+Mandatory dependencies
+----------------------
+
+* numpy
+* six
+
+Optional dependencies
+---------------------
+
+* pandas
+* spc
+* pyopenms
+
 Install
 =======
 
+You can install the dependencies via pip::
+
+  pip install -r requirements.txt
+
 You can clone it and run the setup.py file. Use the following commands to get a
-copy from Github and install all dependencies::
+copy from Github and install::
 
   git clone https://github.com/paris-saclay-cds/specio.git
   cd specio

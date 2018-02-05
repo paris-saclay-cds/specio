@@ -1,4 +1,6 @@
 numpy
 six
+pandas
 git+https://github.com/glemaitre/spc.git
-pyopenms
+pyopenms; python_version > '2.7'
+pandas

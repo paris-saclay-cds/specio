@@ -97,3 +97,26 @@ def load_mzml_path():
     """
     module_path = dirname(__file__)
     return join(module_path, 'data', 'spectra.mzml')
+
+
+def load_csv_path():
+    """Return the path to the CSV toy file.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    path_data : str
+        The path to the CSV data.
+
+    Examples
+    --------
+    >>> from specio.datasets import load_csv_path
+    >>> load_csv_path() # doctest: +ELLIPSIS
+    '...spectra.csv'
+
+    """
+    module_path = dirname(__file__)
+    return join(module_path, 'data', 'spectra.csv')

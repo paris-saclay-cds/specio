@@ -7,6 +7,7 @@
 import re
 from collections import OrderedDict
 
+import numpy as np
 from six import string_types
 
 
@@ -67,8 +68,9 @@ class Spectrum(object):
     wavelength : ndarray, shape (n_wavelength,)
         The corresponding wavelength.
 
-    meta : dict
-        The dictionary containing the meta data.
+    meta : dict or tuple of dict
+        The dictionary containing the meta data. When several spectrum have
+        been compressed, a tuple of dictionary is returned.
 
     Notes
     -----
@@ -100,6 +102,52 @@ class Spectrum(object):
         self.amplitudes, self.wavelength = \
             self._validate_amplitudes_wavelength(amplitudes, wavelength)
         self.meta = meta if meta is not None else {}
+
+    def to_dataframe(self):
+        """Export the Spectrum to a pandas DataFrame.
+
+        Returns
+        -------
+        df_spectrum : DataFrame,
+            A pandas DataFrame containing the information from a Spectrum. The
+            index corresponds to the filename and the columns corresponds to
+            the wavelengths.
+
+        Examples
+        --------
+        >>> from specio import specread
+        >>> from specio.datasets import load_spc_path
+        >>> spectra = specread(load_spc_path())
+        x-y(1)
+        >>> df = spectra.to_dataframe()
+        >>> df.loc[:, df.columns < 410] # print a subset of the DataFrame
+                     400.621094  402.943848  405.267212  407.588501  409.910400
+        spectra.spc      1487.0      1385.0      1441.0      1504.0      1509.0
+
+        """
+        import pandas as pd
+        if isinstance(self.meta, tuple):
+            index = [meta['filename'] for meta in self.meta]
+        else:
+            index = [self.meta['filename']]
+        return pd.DataFrame(np.atleast_2d(self.amplitudes),
+                            index=index,
+                            columns=self.wavelength)
+
+    def to_csv(self, filename):
+        """Export the Spectrum into CSV.
+
+        Parameters
+        ----------
+        filename : str
+            File path
+
+        Returns
+        -------
+        None
+
+        """
+        self.to_dataframe().to_csv(filename)
 
     def __len__(self):
         if self.amplitudes.ndim == 1:

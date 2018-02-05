@@ -48,6 +48,7 @@ AUTHOR_EMAIL = "g.lemaitre58@gmail.com"
 PLATFORMS = "OS Independent"
 VERSION = __version__
 DATA_FILES = data_files
+INSTALL_REQUIRES = ['numpy', 'six']
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
@@ -84,6 +85,7 @@ opts = dict(name=NAME,
             packages=PACKAGES,
             data_files=DATA_FILES,
             include_package_data=True,
+            install_requires=INSTALL_REQUIRES,
             extras_require=EXTRAS_REQUIRE,
             entry_points=ENTRY_POINTS)
 

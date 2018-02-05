@@ -77,7 +77,9 @@ Example datasets
    :toctree: generated/
    :template: function.rst
 
+   datasets.load_csv_path
    datasets.load_fsm_path
    datasets.load_mzml_path
    datasets.load_sp_path
    datasets.load_spc_path
+ 
