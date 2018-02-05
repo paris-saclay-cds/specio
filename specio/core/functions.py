@@ -144,13 +144,17 @@ def _validate_filenames(uri):
         return sorted(glob.glob(os.path.expanduser(uri)))
 
 
-def _zip_spectrum(spectrum):
+def _zip_spectrum(spectrum, tol_wavelength):
     """Compress if possible several Spectrum into a single one.
 
     Parameters
     ----------
     spectrum : list of Spectrum
         The list of Spectrum to zip.
+
+    tol_wavelength : float
+        Tolerance to merge spectrum when their wavelength are slightly
+        different.
 
     Returns
     -------
@@ -166,7 +170,8 @@ def _zip_spectrum(spectrum):
         wavelength = spectrum[0].wavelength
         try:
             consistent_wavelength = [np.allclose(sp.wavelength,
-                                                 wavelength)
+                                                 wavelength,
+                                                 atol=tol_wavelength)
                                      for sp in spectrum]
             if not all(consistent_wavelength):
                 return spectrum
@@ -194,7 +199,7 @@ def _zip_spectrum(spectrum):
         return output_spectrum
 
 
-def specread(uri, format=None, **kwargs):
+def specread(uri, format=None, tol_wavelength=1e-5, **kwargs):
     """Read spectra in a given format.
 
     Reads spectrum from the specified file. Returns a list or a
@@ -214,6 +219,10 @@ def specread(uri, format=None, **kwargs):
     format : str
         The format to use to read the file. By default specio selects
         the appropriate for you based on the filename and its contents.
+
+    tol_wavelength : float, optional
+        Tolerance to merge spectrum when their wavelength are slightly
+        different.
 
     kwargs : dict
         Further keyword arguments are passed to the reader. See :func:`.help`
@@ -241,7 +250,7 @@ def specread(uri, format=None, **kwargs):
             spectrum = _get_reader_get_data(uri, format, **kwargs)
 
         if isinstance(spectrum, list):
-            spectrum = _zip_spectrum(spectrum)
+            spectrum = _zip_spectrum(spectrum, tol_wavelength)
 
         return spectrum
 

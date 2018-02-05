@@ -87,14 +87,25 @@ def _generate_list_spectrum(*args):
             for _ in range(n_spectrum)]
 
 
+def _generate_list_spectrum_close_wavelength(*args):
+    n_wavelength = 5
+    tol = 1e-3
+    wavelength = np.arange(5) + np.random.uniform(low=-tol, high=tol)
+    return Spectrum(np.random.random(n_wavelength),
+                    wavelength,
+                    None)
+
+
 @pytest.mark.parametrize(
-    "side_effect,spectra_type,spectra_shape",
-    [(_generate_spectrum_identical_wavelength, Spectrum, (10, 5)),
-     (_generate_spectrum_different_wavelength_size, list, 10),
-     (_generate_spectrum_different_wavelength, list, 10),
-     (_generate_list_spectrum, list, 30)])
-def test_specread_consitent_wavelength(side_effect, spectra_type,
-                                       spectra_shape, mocker):
+    "side_effect,tol_wavelength,spectra_type,spectra_shape",
+    [(_generate_spectrum_identical_wavelength, 1e-5, Spectrum, (10, 5)),
+     (_generate_spectrum_different_wavelength_size, 1e-5, list, 10),
+     (_generate_spectrum_different_wavelength, 1e-5, list, 10),
+     (_generate_list_spectrum, 1e-5, list, 30),
+     (_generate_list_spectrum_close_wavelength, 1e-2, Spectrum, (10, 5)),
+     (_generate_list_spectrum_close_wavelength, 1e-5, list, 10)])
+def test_specread_consitent_wavelength(side_effect, tol_wavelength,
+                                       spectra_type, spectra_shape, mocker):
     # emulate that we read several file
     mocker.patch('specio.core.functions._validate_filenames',
                  return_value=['filename' for _ in range(10)])
@@ -103,7 +114,7 @@ def test_specread_consitent_wavelength(side_effect, spectra_type,
                  side_effect=side_effect)
 
     # emulate the spectrum reading
-    spectra = specread('')
+    spectra = specread('', tol_wavelength=tol_wavelength)
     assert isinstance(spectra, spectra_type)
     if isinstance(spectra, Spectrum):
         assert spectra.amplitudes.shape == spectra_shape
