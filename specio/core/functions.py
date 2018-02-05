@@ -173,7 +173,6 @@ def _zip_spectrum(spectrum, tol_wavelength):
                                                  wavelength,
                                                  atol=tol_wavelength)
                                      for sp in spectrum]
-            print(consistent_wavelength)
             if not all(consistent_wavelength):
                 return spectrum
 
