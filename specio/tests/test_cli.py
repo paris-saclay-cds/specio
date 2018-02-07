@@ -69,7 +69,7 @@ def test_specio_cli_multi_spectra(filename_input, filename_output, run,
     try:
         if filename_output is None:
             run("convert", filename_input)
-            output_folder = testdir.tmpdir
+            output_folder = testdir.tmpdir.__str__()
         else:
             filename_output = os.path.join(tmp_dir, filename_output)
             run("convert", filename_input, '-o', filename_output)
