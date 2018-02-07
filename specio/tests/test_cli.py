@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 from tempfile import mkdtemp
 from shutil import rmtree
@@ -59,6 +60,9 @@ def test_specio_cli_single_spectrum(filename_input, filename_output, run):
             os.remove(filename_output)
 
 
+@pytest.mark.skipif(
+    (sys.platform == 'win32') and (sys.version_info < (3, 5)),
+    reason="OpenMS not available")
 @pytest.mark.parametrize(
     "filename_input, filename_output",
     [(os.path.join(module_data_path, 'spectra.mzml'), None),
