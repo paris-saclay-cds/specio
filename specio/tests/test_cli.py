@@ -33,6 +33,7 @@ def run(testdir):
      (os.path.join(module_data_path, '*.spc'), 'spectra.csv'),
      (os.path.join(module_data_path, '*.spc'), None)])
 def test_specio_cli_single_spectrum(filename_input, filename_output, run):
+    # test when specread return a Spectrum instance
     tmp_dir = mkdtemp()
     try:
         if filename_output is None:
@@ -69,6 +70,7 @@ def test_specio_cli_single_spectrum(filename_input, filename_output, run):
      (os.path.join(module_data_path, 'spectra.mzml'), 'spectra')])
 def test_specio_cli_multi_spectra(filename_input, filename_output, run,
                                   testdir):
+    # test when specread return a list of Spectrum instance
     tmp_dir = mkdtemp()
     try:
         if filename_output is None:
