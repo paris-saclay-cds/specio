@@ -1,4 +1,5 @@
 import os
+import glob
 from tempfile import mkdtemp
 from shutil import rmtree
 
@@ -29,15 +30,14 @@ def run(testdir):
     [(os.path.join(module_data_path, 'sp1.spc'), None),
      (os.path.join(module_data_path, 'sp1.spc'), 'spectra.csv'),
      (os.path.join(module_data_path, '*.spc'), 'spectra.csv'),
-     (os.path.join(module_data_path, '*.spc'), None),
-     (os.path.join(module_data_path, 'spectra.mzml'), None),
-     (os.path.join(module_data_path, 'spectra.mzml'), 'spectra.csv')])
-def test_specio_cli(filename_input, filename_output, run):
+     (os.path.join(module_data_path, '*.spc'), None)])
+def test_specio_cli_single_spectrum(filename_input, filename_output, run):
     tmp_dir = mkdtemp()
     try:
         if filename_output is None:
             run("convert", filename_input)
-            basename, _ = os.path.splitext(filename_input)
+            basename, _ = os.path.splitext(
+                sorted(glob.glob(filename_input))[0])
             filename_output = basename + '.csv'
         else:
             filename_output = os.path.join(tmp_dir, filename_output)
@@ -57,3 +57,26 @@ def test_specio_cli(filename_input, filename_output, run):
         rmtree(tmp_dir)
         if os.path.isfile(filename_output):
             os.remove(filename_output)
+
+
+@pytest.mark.parametrize(
+    "filename_input, filename_output",
+    [(os.path.join(module_data_path, 'spectra.mzml'), None),
+     (os.path.join(module_data_path, 'spectra.mzml'), 'spectra')])
+def test_specio_cli_multi_spectra(filename_input, filename_output, run,
+                                  testdir):
+    tmp_dir = mkdtemp()
+    try:
+        if filename_output is None:
+            run("convert", filename_input)
+            output_folder = testdir.tmpdir
+        else:
+            filename_output = os.path.join(tmp_dir, filename_output)
+            run("convert", filename_input, '-o', filename_output)
+            output_folder = tmp_dir
+
+        exported_files = glob.glob(os.path.join(output_folder, '*.csv'))
+        assert len(exported_files) == 531
+
+    finally:
+        rmtree(tmp_dir)
