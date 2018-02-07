@@ -14,7 +14,7 @@ from numpy.testing import assert_allclose
 from specio import help, get_reader, specread
 from specio.core import Spectrum
 
-DATA_PATH = module_path = dirname(__file__)
+DATA_PATH = dirname(__file__)
 RNG = np.random.RandomState(0)
 
 
