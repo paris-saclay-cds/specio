@@ -39,7 +39,8 @@ def main():
         # case that we could not merge the spectra together
         if isinstance(spectrum, list):
             if args.output:
-                output_basename = args.output[0]
+                # remove the extension in case that the user gave one
+                output_basename, _ = os.path.splitext(args.output[0])
                 for idx, sp in enumerate(spectrum):
                     sp.to_csv(output_basename + '_{}.csv'.format(idx))
             else:
