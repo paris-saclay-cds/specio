@@ -6,13 +6,6 @@
 Welcome to specio's documentation!
 ==================================
 
-Specio is a Python library that provides an easy interface to read hypersectral
-data. It is cross-platform, runs on Python 2.x and 3.x, and is easy to
-install. This package is heavily inspired from the imageio:
-http://imageio.github.io
-
-Contents:
-
 .. toctree::
    :maxdepth: 2
    :hidden:
@@ -34,3 +27,31 @@ Contents:
    :caption: Gallery examples
 
    auto_examples/index
+
+Specio is a Python library that provides an easy interface to read hypersectral
+data. It is cross-platform, runs on Python 2.x and 3.x, and is easy to
+install. This package is heavily inspired from the imageio:
+http://imageio.github.io
+
+`Getting started <install.html>`_
+---------------------------------
+
+Information to install, test, and contribute to the package.
+
+`User documentation <sec_user.html>`_
+-------------------------------------
+
+The user documentation containing information about each supported format as
+well as the API documentation.
+
+`Developer documentation <sec_dev.html>`_
+-----------------------------------------
+
+The developer documentation containing information to develop a new plugin and
+add support to new spectroscopy format.
+
+`Examples <auto_examples/index.html>`_
+--------------------------------------
+
+A set of examples illustrating the usage of the package to read and export
+spectroscopic data.
