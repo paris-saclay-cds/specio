@@ -25,8 +25,12 @@ You can install the dependencies via pip::
 
   pip install -r requirements.txt
 
-You can clone it and run the setup.py file. Use the following commands to get a
-copy from Github and install::
+You can install the package using pip and the PyPi repository::
+
+  pip install -U specio
+
+Alternatively, you can clone it and run the setup.py file. Use the following
+commands to get a copy from Github and install::
 
   git clone https://github.com/paris-saclay-cds/specio.git
   cd specio
@@ -46,6 +50,8 @@ You want to test the code before to install::
 You wish to test the coverage of your version::
 
   $ make coverage
+
+Note that `make` is only available in Unix platform.
 
 Contribute
 ==========
