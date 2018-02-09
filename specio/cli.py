@@ -31,15 +31,17 @@ def main():
              'as input with different extension.')
 
     convert_parser.add_argument(
-        '--tolerance', '-t', nargs=1, type=float,
+        '--tolerance', '-t', nargs=1, type=float, default=1e-5,
         help='Tolerance to merge spectrum when their wavelength are slightly '
-             'different.')
+             'different (default=1e-5)')
 
     args = parser.parse_args()
 
     if args.sub == 'convert':
         filenames = _validate_filenames(args.filepath)
-        tol_wavelength = args.tolerance[0] if args.tolerance else 1e-5
+        tol_wavelength = (args.tolerance[0] if isinstance(args.tolerance, list)
+                          else args.tolerance)
+        print(tol_wavelength)
         spectrum = specread(filenames, tol_wavelength=tol_wavelength)
 
         # case that we could not merge the spectra together
