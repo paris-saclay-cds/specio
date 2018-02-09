@@ -1,4 +1,5 @@
 import os
+import codecs
 from setuptools import setup, find_packages
 
 # get __version__ from _version.py
@@ -20,7 +21,7 @@ PACKAGES = find_packages()
 
 CLASSIFIERS = ["Environment :: Console",
                "Intended Audience :: Science/Research",
-               "License :: OSI Approved :: BSD 3",
+               "License :: OSI Approved",
                "Operating System :: OS Independent",
                'Programming Language :: Python :: 2.7',
                'Programming Language :: Python :: 3.5',
@@ -28,13 +29,8 @@ CLASSIFIERS = ["Environment :: Console",
                "Topic :: Scientific/Engineering"]
 
 description = "specio: Python input/output for spectroscopic files."
-# Long description will go up on the pypi page
-long_description = """
-
-specio
-======
-Python input/output for spectroscopic files.
-"""
+with codecs.open('README.rst', encoding='utf-8-sig') as f:
+    long_description = f.read()
 
 NAME = "specio"
 MAINTAINER = "Guillaume Lemaitre"
