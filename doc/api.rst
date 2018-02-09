@@ -76,9 +76,9 @@ Any format can be exported using the ``specio`` command line::
 
   specio convert input_file.spc output_file.csv
 
-``convert`` receive the input and output arguments. It is also possible to the
-output argument and an automatic output file will be generated depending of the
-input file name::
+``convert`` receive the input and output arguments. It is also possible to omit
+the output argument and an automatic output file will be generated depending of
+the input file name::
 
   specio convert input_file.spc
 
@@ -86,7 +86,7 @@ As with :func:`specio.specread`, an input can get a name with a wildcard::
 
   specio convert "*.spc"
 
-In addition, this is also possible to move the tolerance up to aggregate
+In addition, this is also possible to increase the tolerance to aggregate
 several spectra in the same CSV as in :func:`specio.specread`::
 
   specio convert "*.spc" --tolerance 1e-2
