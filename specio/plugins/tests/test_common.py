@@ -23,7 +23,7 @@ from specio.datasets import load_mzml_path
 def skip_windows_py27():
     return pytest.mark.skipif(
         (sys.platform == 'win32') and (sys.version_info < (3, 5)),
-        reason="OpenMS not avaialble")
+        reason="OpenMS not available")
 
 
 def _check_spectra(spec, filename, filename_cmp, spectrum_shape,

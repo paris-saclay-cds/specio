@@ -9,6 +9,7 @@ with open(ver_file) as f:
 # get path of all data files used for testing
 data_dir = [os.path.join('specio', 'core', 'tests', 'data'),
             os.path.join('specio', 'plugins', 'tests', 'data'),
+            os.path.join('specio', 'tests', 'data'),
             os.path.join('specio', 'datasets', 'data')]
 # recursively find the data
 data_files = [(d, [os.path.join(d, f) for f in files])
@@ -63,6 +64,12 @@ EXTRAS_REQUIRE = {
     ]
 }
 
+ENTRY_POINTS = {
+    'console_scripts': [
+        'specio=specio.cli:main']
+}
+
+
 opts = dict(name=NAME,
             maintainer=MAINTAINER,
             maintainer_email=MAINTAINER_EMAIL,
@@ -80,7 +87,8 @@ opts = dict(name=NAME,
             data_files=DATA_FILES,
             include_package_data=True,
             install_requires=INSTALL_REQUIRES,
-            extras_require=EXTRAS_REQUIRE)
+            extras_require=EXTRAS_REQUIRE,
+            entry_points=ENTRY_POINTS)
 
 
 if __name__ == '__main__':

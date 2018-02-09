@@ -241,18 +241,8 @@ def specread(uri, format=None, tol_wavelength=1e-5, **kwargs):
         * a dict ``meta``.
 
     """
-    try:
-        filenames = _validate_filenames(uri)
-        if len(filenames) > 1:
-            spectrum = [_get_reader_get_data(f, format, **kwargs)
-                        for f in filenames]
-        else:
-            spectrum = _get_reader_get_data(uri, format, **kwargs)
-
-        if isinstance(spectrum, list):
-            spectrum = _zip_spectrum(spectrum, tol_wavelength)
-
-        return spectrum
-
-    except Exception:
-        return _get_reader_get_data(uri, format, **kwargs)
+    filenames = _validate_filenames(uri)
+    spectrum = [_get_reader_get_data(f, format, **kwargs)
+                for f in filenames]
+    return (_zip_spectrum(spectrum, tol_wavelength) if len(spectrum) > 1
+            else spectrum[0])
