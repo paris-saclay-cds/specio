@@ -64,6 +64,33 @@ For more information, you can check the full API documentation above.
 
    specio.core.Spectrum
 
+Command line interface
+======================
+
+``specio`` provides a command line interface to make basic data manipulation.
+
+Conversion to CSV
+-----------------
+
+Any format can be exported using the ``specio`` command line::
+
+  specio convert input_file.spc output_file.csv
+
+``convert`` receive the input and output arguments. It is also possible to the
+output argument and an automatic output file will be generated depending of the
+input file name::
+
+  specio convert input_file.spc
+
+As with :func:`specio.specread`, an input can get a name with a wildcard::
+
+  specio convert "*.spc"
+
+In addition, this is also possible to move the tolerance up to aggregate
+several spectra in the same CSV as in :func:`specio.specread`::
+
+  specio convert "*.spc" --tolerance 1e-2
+
 Example datasets
 ================
 
