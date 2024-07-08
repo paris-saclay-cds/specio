@@ -7,7 +7,12 @@
 from __future__ import print_function
 
 import os
-from collections import Iterable
+try:
+    # python 3.10
+    from collections.abc import Iterable
+except ImportError:
+    # if failed, fall back to python 3.8
+    from collections import Iterable
 from warnings import warn
 from six import string_types
 
