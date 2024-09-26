@@ -7,7 +7,7 @@
 from __future__ import print_function
 
 import os
-from collections import Iterable
+from collections.abc import Iterable
 from warnings import warn
 from six import string_types
 
